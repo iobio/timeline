@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/Timeline.js --bundle --outfile=dist/timeline.min.js --watch --minify --sourcemap --platform=browser"
+    "build": "esbuild src/Timeline.js --bundle --outfile=dist/timeline.min.js --watch --minify --sourcemap --platform=browser --global-name=timeline"
   },
   "keywords": [],
   "author": "",
