@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+        #root {
+            border: 1px solid black;
+            margin: 20px;
+            padding: 20px;
+        }
+    </style>
+  </head>
+  <body>
+
+    <!-- <script src="https://cdn.jsdelivr.net/gh/iobio/timeline/dist/timeline.min.js"></script> -->
+
+    <script type="module">
+        import {Timeline} from './src/Timeline.js';
+
+        const data = {
+            events: [
+                {
+                "type": "Application Submitted",
+                "date": "2017-01-01",
+                "description": "Application submitted to the timeline"
+                },    
+                {
+                    "type": "Medical Records Submitted",
+                    "date": "2017-07-02",
+                    "description": "Medical records submitted to the timeline"
+                },
+                {
+                    "type": "Medical Records Submitted",
+                    "date": "2017-07-03",
+                    "description": "Medical records submitted to the timeline"
+                },
+                {
+                    "type": "Medical Records Submitted",
+                    "date": "2017-07-04",
+                    "description": "Medical records submitted to the timeline"
+                },
+                {
+                    "type": "Medical Records Submitted",
+                    "date": "2017-07-10",
+                    "description": "Medical records submitted to the timeline"
+                },
+            ],
+        };
+
+        const timeline = Timeline();
+
+        const tl = timeline.createTimeline(data);
+     
+        document.body.appendChild(tl);
+
+    </script>
+  </body>
+</html>

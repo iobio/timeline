@@ -6,11 +6,27 @@ import {Modal} from './Modal.js';
 export function Timeline() {
 
     let x, x2, xTop, y, y2, mainChart, navChart, width, height, height2, xAxis, xAxisTop, xAxis2, yAxis_left, 
-    yAxis_right, brush, container, svg, margin, margin2, defaultSelection, formattedData, minDate, maxDate;
+    yAxis_right, brush, container,svg, margin, margin2, defaultSelection, formattedData, minDate, maxDate;
 
-    function initializeTimeline(selector, data) {
+    function createTimeline(data) {
 
-        container = d3.select(selector);
+        data = data.events.map(
+            (event) => new Event(event.type, event.date, event.description)
+        );
+
+        container = d3.create("div")
+            .attr("class", "timeline-container")
+            .style("position", "absolute")
+            .style("height", "550px")
+            .style("width", "960px")
+            .style("top", "50%")
+            .style("left", "50%")
+            .style("transform", "translate(-50%, -50%)")
+            .style("background-color", "#ffffff")
+            .style("border-width", "1px")
+            .style("border-style", "ridge")
+            .style("border-color", "rgba(0, 0, 0, 0.12)");
+
         width = 960;
         height = 500;
         svg = container.append("svg")
@@ -18,7 +34,6 @@ export function Timeline() {
             .attr("height", height)
             .attr("class", "timeline-svg");
 
-        
         margin = {top: 20, right: 20, bottom: 110, left: 20},
         margin2 = {top: 420, right: 20, bottom: 30, left: 20},
         width = +svg.attr("width") - margin.left - margin.right,
@@ -170,7 +185,10 @@ export function Timeline() {
             .call(yAxis_right);
 
         mainChart.selectAll(".tick line")
-            .attr("class", "tick-line");
+            .attr("class", "tick-line")
+            .style("stroke", "rgb(222, 221, 221)")
+            .style("stroke-dasharray", "7, 5")
+            .style("stroke-width", "1");
 
         mainChart.selectAll(".dot")
             .data(formattedData)
@@ -180,7 +198,10 @@ export function Timeline() {
             .attr("x", d => x(d.secondDayOfMonth))
             .attr("y", d => d.verticalOffset * 40) // Adjust the y-coordinate based on the vertical offset
             .attr("width", 25) 
-            .attr("height", 25);
+            .attr("height", 25)
+            .style("fill", "steelblue")
+            .style("stroke", "#fff")
+            .style("clip-path", "url(#clip)");
 
         mainChart.selectAll(".dotText")
             .data(formattedData)
@@ -191,8 +212,12 @@ export function Timeline() {
             .text(function(d) { return d.type; })
             .on("click", function(event, d) {
                 console.log('dotText clicked', d);
-                openModal(selector, d.type, d.description);
-            });
+                openModal(d.type, d.description);
+            })
+            .style("fill", "black")
+            .style("font-size", "9px")
+            .style("font-family", "sans-serif")
+            .style("clip-path", "url(#clip)");
 
 
         navChart.selectAll(".dotContext")
@@ -202,7 +227,9 @@ export function Timeline() {
             .attr("cx", d => x2(d.secondDayOfMonth))
             .attr("cy", d => height2 / 4 + d.verticalOffset * 7)
             .attr("r", 3)
-            .style("fill", function(d) { return d.categoryColor; }); 
+            .style("fill", function(d) { return d.categoryColor; })
+            .style("stroke", "#fff")
+            .style("clip-path", "url(#clip)");
 
         navChart.append("g")
             .attr("class", "axis axis--x")
@@ -226,6 +253,7 @@ export function Timeline() {
         //     .attr("height", height)
         //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         //     .call(zoom);
+        return container.node()
     }
 
 
@@ -265,7 +293,10 @@ export function Timeline() {
         mainChart.select(".axis--x").call(xAxis);
     
         mainChart.selectAll(".tick line")
-            .attr("class", "tick-line");
+            .attr("class", "tick-line")
+            .style("stroke", "rgb(222, 221, 221)")
+            .style("stroke-dasharray", "7, 5")
+            .style("stroke-width", "1");
             
     }
 
@@ -358,7 +389,7 @@ export function Timeline() {
     
     }
 
-    function openModal(selector, type, description) {
+    function openModal(type, description) {
         const modal = Modal();
         modal.createModal(selector, {
             show: true,
@@ -367,7 +398,7 @@ export function Timeline() {
         });
     }
 
-    return {initializeTimeline,updateChart};
+    return {createTimeline,updateChart};
 }
 
 
