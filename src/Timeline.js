@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import Event from '../model/Event.js'; 
-import {Modal} from '../src/Modal.d3.js';
+import {Modal} from '../src/Modal.js';
 
 
 export function Timeline() {
