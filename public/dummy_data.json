@@ -2,27 +2,33 @@
     {
         "type": "Application Submitted",
         "date": "2017-01-01",
-        "description": "Application submitted to the timeline"
-
-    },    {
+        "description": "Application submitted to the timeline",
+        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+    },    
+    {
         "type": "Medical Records Submitted",
         "date": "2017-07-02",
-        "description": "Medical records submitted to the timeline"
+        "description": "Medical records submitted to the timeline",
+        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+
     },
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-03",
-        "description": "Medical records submitted to the timeline"
+        "description": "Medical records submitted to the timeline",
+        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
     },
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-04",
-        "description": "Medical records submitted to the timeline"
+        "description": "Medical records submitted to the timeline",
+        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
     },
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-10",
-        "description": "Medical records submitted to the timeline"
+        "description": "Medical records submitted to the timeline",
+        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
     },
 
     {

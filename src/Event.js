@@ -1,8 +1,9 @@
 class Event {
-    constructor(type, date, description) {
+    constructor(type, date, description, iconUrl) {
       this.type = type;
       this.date = date;
       this.description = description;
+      this.iconUrl = iconUrl;
       this.formattedDate = this.formatDate();
       this.icon = this.setIcon();
       this.svgContainer = this.setSvgContainer();
