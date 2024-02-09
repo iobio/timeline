@@ -14,47 +14,17 @@
     <script src="https://cdn.jsdelivr.net/gh/iobio/timeline/dist/timeline.min.js"></script>
 
     <script>
-        
-        const data = {
-            events: [
-                {
-                "type": "Application Submitted",
-                "date": "2017-01-01",
-                "description": "Application submitted to the timeline",
-                "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-                },
-                {
-                    "type": "Medical Records Submitted",
-                    "date": "2017-07-02",
-                    "description": "Medical records submitted to the timeline",
-                    "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-
-                },
-                {
-                    "type": "Medical Records Submitted",
-                    "date": "2017-07-03",
-                    "description": "Medical records submitted to the timeline",
-                    "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-                },
-                {
-                    "type": "Medical Records Submitted",
-                    "date": "2017-07-04",
-                    "description": "Medical records submitted to the timeline",
-                    "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-                },
-                {
-                    "type": "Medical Records Submitted",
-                    "date": "2017-07-10",
-                    "description": "Medical records submitted to the timeline",
-                    "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-                },
-            ],
-        };
-
-        const tl = timeline.createTimeline(data);
        
-        document.body.appendChild(tl.dom);
+        async function loadAndDisplayTimeline() {
+            const response = await fetch('./dummy_data.json');
+            const jsonData = await response.json();
 
+            const tl = createTimeline(jsonData);
+            document.body.appendChild(tl.dom);
+       
+        }
+
+        loadAndDisplayTimeline();
 
     </script>
   </body>

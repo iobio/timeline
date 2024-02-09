@@ -3,143 +3,163 @@
         "type": "Application Submitted",
         "date": "2017-01-01",
         "description": "Application submitted to the timeline",
-        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },    
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-02",
         "description": "Medical records submitted to the timeline",
-        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
 
     },
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-03",
         "description": "Medical records submitted to the timeline",
-        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-04",
         "description": "Medical records submitted to the timeline",
-        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },
     {
         "type": "Medical Records Submitted",
         "date": "2017-07-10",
         "description": "Medical records submitted to the timeline",
-        "iconUrl": "https://fonts.google.com/icons?selected=Material%20Icons%3Adomain_verification%3A"
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },
 
     {
         "type": "Medical Records Received",
         "date": "2017-08-02",
-        "description": "Medical records received to the timeline"
+        "description": "Medical records received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
+        
     },
     {
         "type": "Medical Records Received",
         "date": "2017-08-10",
-        "description": "Medical records received to the timeline"
+        "description": "Medical records received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },
     {
         "type": "Medical Records Received",
         "date": "2017-08-15",
-        "description": "Medical records received to the timeline"
+        "description": "Medical records received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },
     {
         "type": "Medical Records Received",
         "date": "2017-08-20",
-        "description": "Medical records received to the timeline"
+        "description": "Medical records received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
     },
     {
         "type": "Decision Date",
         "date": "2021-12-10",
-        "description": "Decision date to the timeline"
+        "description": "Decision date to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Evaluation Started",
         "date": "2021-12-12",
-        "description": "Evaluation started to the timeline"
+        "description": "Evaluation started to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Sequence Data Received",
         "date": "2022-01-10",
-        "description": "Sequence data received to the timeline"
+        "description": "Sequence data received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Sequence Data Received",
         "date": "2022-01-15",
-        "description": "Sequence data received to the timeline"
+        "description": "Sequence data received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Sequence Data Received",
         "date": "2022-01-20",
-        "description": "Sequence data received to the timeline"
+        "description": "Sequence data received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Sequence Data Received",
         "date": "2022-01-21",
-        "description": "Sequence data received to the timeline"
+        "description": "Sequence data received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Evaluation Completed",
         "date": "2022-02-15",
-        "description": "Evaluation completed to the timeline"
+        "description": "Evaluation completed to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Wrap Up Documents",
         "date": "2022-02-15",
-        "description": "Wrap up docs to the timeline"
+        "description": "Wrap up docs to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Diagnosis entered",
         "date": "2022-03-10",
-        "description": "Diagnosis entered to the timeline"
+        "description": "Diagnosis entered to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Samples sent to MOSC",
         "date": "2022-04-10",
-        "description": "Samples sent to MOSC to the timeline"
+        "description": "Samples sent to MOSC to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Samples sent to MOSC",
         "date": "2022-04-20",
-        "description": "Samples sent to MOSC to the timeline"
+        "description": "Samples sent to MOSC to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Samples sent to MOSC",
         "date": "2022-05-10",
-        "description": "Samples sent to MOSC to the timeline"
+        "description": "Samples sent to MOSC to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Samples sent to MOSC",
         "date": "2022-05-20",
-        "description": "Samples sent to MOSC to the timeline"
+        "description": "Samples sent to MOSC to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     {
         "type": "Samples sent to MOSC",
         "date": "2022-05-25",
-        "description": "Samples sent to MOSC to the timeline"
+        "description": "Samples sent to MOSC to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
     },
     
     {
         "type": "Results Received",
         "date": "2024-08-31",
-        "description": "Results received to the timeline"
+        "description": "Results received to the timeline",
+        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
         
     }
 

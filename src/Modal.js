@@ -13,7 +13,7 @@ export function Modal() {
             .append("div")
             .attr("class", "modal")
             .style("display", show ? "flex" : "none")
-            .style("position", "fixed")
+            .style("position", "absolute")
             .style("top", 0)
             .style("left", 0)
             .style("width", "100%")

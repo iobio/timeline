@@ -209,7 +209,7 @@ function createTimeline(data) {
         .text(function(d) { return d.type; })
         .on("click", function(event, d) {
             console.log('dotText clicked', d);
-            openModal(d.type, d.description);
+            openModal('.timeline-container', d.type, d.description);
         })
         .style("fill", "black")
         .style("font-size", "9px")
@@ -386,7 +386,7 @@ function createTimeline(data) {
     }
 
 
-    function openModal(type, description) {
+    function openModal(selector, type, description) {
         const modal = Modal();
         modal.createModal(selector, {
             show: true,
