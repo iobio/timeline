@@ -11,21 +11,21 @@
   </head>
   <body>
 
-    <script src="https://cdn.jsdelivr.net/gh/iobio/timeline/dist/timeline.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/iobio/timeline/dist/timeline.min.js"></script> -->
 
-    <script>
+    <script type="module">
+        import {createTimeline} from './src/Timeline.js';
+        import events from './public/dummy_data.json';
        
-        async function loadAndDisplayTimeline() {
-            const response = await fetch('./dummy_data.json');
-            const jsonData = await response.json();
 
-            const tl = createTimeline(jsonData);
-            document.body.appendChild(tl.dom);
-       
-        }
-
-        loadAndDisplayTimeline();
+        const tl = createTimeline(events);
+        document.body.appendChild(tl.dom);
 
     </script>
+
+   
+
+
+
   </body>
 </html>
