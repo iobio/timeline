@@ -295,7 +295,7 @@ function createTimeline(data) {
     }
 
 
-    function updateChart(selector, selectedOption) {
+    function updateChart(selectedOption) {
         const filteredData = selectedOption ? 
         formattedData.filter(d => d.category === selectedOption) : formattedData;
 
@@ -328,7 +328,7 @@ function createTimeline(data) {
         console.log("filteredData", filteredData);
         console.log("New defaultSelection", defaultSelection);
 
-        updateMainChart(selector,filteredData);
+        updateMainChart('.timeline-container',filteredData);
         updateNavChart(filteredData);
 
         // Update the brush to reflect the new defaultSelection
