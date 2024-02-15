@@ -83,13 +83,13 @@ function createTimeline(data) {
         .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
     
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const startYear = currentYear - 9;
-    minDate = new Date(startYear, 0, 1); // Jan 1st of start year
-    maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
-    console.log("minDate:", minDate)
-    console.log("maxDate:", maxDate)
+    // const currentDate = new Date();
+    // const currentYear = currentDate.getFullYear();
+    // const startYear = currentYear - 4;
+    // minDate = new Date(startYear, 0, 1); // Jan 1st of start year
+    // maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
+    // console.log("minDate:", minDate)
+    // console.log("maxDate:", maxDate)
 
 
     // Parse dates
@@ -108,8 +108,8 @@ function createTimeline(data) {
 
     console.log("formatted data:",formattedData);
 
-    // let minDate = d3.min(formattedData, function(d) { return d.date; });
-    // let maxDate = d3.max(formattedData, function(d) { return d.date; });
+    minDate = d3.min(formattedData, function(d) { return d.date; });
+    maxDate = d3.max(formattedData, function(d) { return d.date; });
 
     // Adjust to start at the beginning of the minDate year and end at the end of the maxDate year
     x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
@@ -204,8 +204,8 @@ function createTimeline(data) {
         .data(formattedData)
         .enter().append("text")
         .attr("class", "dotText") // Assign a class for styling
-        .attr("x", d => x(d.secondDayOfMonth) + 30) // Position the text to the right of the image
-        .attr("y", d => height / 30 + d.verticalOffset * 40) // Align the text vertically with the image
+        .attr("x", d => x(d.secondDayOfMonth)) // Position the text to the right of the image
+        .attr("y", d => height / 10 + d.verticalOffset * 40) // Align the text vertically with the image
         .text(function(d) { return d.type; })
         .on("click", function(event, d) {
             console.log('dotText clicked', d);
@@ -215,6 +215,8 @@ function createTimeline(data) {
         .style("font-size", "9px")
         .style("font-family", "sans-serif")
         .style("clip-path", "url(#clip)");
+
+    updateRectangles();
 
 
     navChart.selectAll(".dotContext")
@@ -242,6 +244,18 @@ function createTimeline(data) {
         .attr("class", "axis axis--x-top")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .call(xAxisTop);
+
+    // Tooltip setup
+    const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    .style("position", "absolute")
+    .style("padding", "10px")
+    .style("background", "rgb(255,255,255)")
+    .style("border", "1px solid black")
+    .style("border-radius", "5px")
+    .style("pointer-events", "none"); // Ensure the tooltip doesn't interfere with mouse events
+
 
         // figuring out why zoom event and click event are conflicting
     // svg.append("rect")
@@ -281,8 +295,8 @@ function createTimeline(data) {
             .attr("y", d => d.verticalOffset * 35);
     
         mainChart.selectAll(".dotText")
-            .attr("x", d => x(d.secondDayOfMonth) + 30)
-            .attr("y", d => height / 30 + d.verticalOffset * 35);
+            .attr("x", d => x(d.secondDayOfMonth))
+            .attr("y", d => height / 10 + d.verticalOffset * 35);
     
         mainChart.select(".axis--x").call(xAxis);
     
@@ -291,6 +305,8 @@ function createTimeline(data) {
             .style("stroke", "rgb(222, 221, 221)")
             .style("stroke-dasharray", "7, 5")
             .style("stroke-width", "1");
+
+        updateRectangles();
             
     }
 
@@ -357,8 +373,8 @@ function createTimeline(data) {
             .data(filteredData)
             .enter().append("text")
             .attr("class", "dotText")
-            .attr("x", d => x(d.secondDayOfMonth) + 30)
-            .attr("y", d => height / 30 + d.verticalOffset * 40)
+            .attr("x", d => x(d.secondDayOfMonth))
+            .attr("y", d => height / 10 + d.verticalOffset * 40)
             .text(function(d) { return d.type; })
             .on("click", function(event, d) {
             console.log('dotText clicked', d);
@@ -394,6 +410,59 @@ function createTimeline(data) {
             description: description,
         });
     }
+
+
+    function updateRectangles() {
+        // Remove any existing rectangle
+        mainChart.selectAll(".evaluation-rect").remove();
+    
+        // Find the evaluation events
+        const evalStart = mainChart.selectAll(".dot")
+            .filter(function(d) { return d.type === "Evaluation Started"; });
+        const evalComplete = mainChart.selectAll(".dot")
+            .filter(function(d) { return d.type === "Evaluation Completed"; });
+    
+        if (!evalStart.empty() && !evalComplete.empty()) {
+            const evalStartNode = evalStart.nodes()[0];
+            const evalCompleteNode = evalComplete.nodes()[0];
+    
+            const startX = +d3.select(evalStartNode).attr('x') + 25;
+            const endX = +d3.select(evalCompleteNode).attr('x');
+            const startY = Math.max(+d3.select(evalStartNode).attr('y'), +d3.select(evalCompleteNode).attr('y')) + 10;
+    
+            // Draw the rectangle
+            mainChart.append("rect")
+                .attr("class", "evaluation-rect")
+                .attr("x", startX)
+                .attr("y", startY)
+                .attr("width", endX - startX)
+                .attr("height", 8) 
+                .attr("fill", "#006400")
+                .attr("rx", 2)
+                .attr("ry", 2) 
+                .style("clip-path", "url(#clip)")
+                .on("mouseover", function(event, d) {
+                    d3.select(this).attr("fill", "orange"); // Highlight color
+                    
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html("Start: " + d3.timeFormat("%B %d, %Y")(d3.select(evalStartNode).data()[0].date) +
+                                  "<br/>End: " + d3.timeFormat("%B %d, %Y")(d3.select(evalCompleteNode).data()[0].date))
+                        .style("left", (event.pageX) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("fill", "#006400"); // Original color
+                    
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        }
+    }
+    
+    
 
 
     return {

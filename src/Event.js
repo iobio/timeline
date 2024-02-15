@@ -12,7 +12,7 @@ class Event {
     setColor() {
         const typeToColorMapping = {
             "Application Submitted": "#699BF7",
-            "Medical Records Submitted": "#699BF7",
+            "Medical Records Requested": "#699BF7",
             "Medical Records Received": "#699BF7",
             "Decision Date": "#699BF7",
             "Evaluation Started": "#006400",
@@ -46,7 +46,7 @@ class Event {
     setCategory() {
         const typeToCategoryMapping = {
             "Application Submitted": "Application",
-            "Medical Records Submitted": "Application",
+            "Medical Records Requested": "Application",
             "Medical Records Received": "Application",
             "Decision Date": "Application",
             "Evaluation Started": "Evaluation",
