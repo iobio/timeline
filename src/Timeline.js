@@ -13,7 +13,7 @@ function createTimeline(data) {
 
     container = d3.create("div")
         .attr("class", "timeline-container")
-        // .style("position", "absolute")
+        .style("position", "relative")
         .style("height", "550px")
         .style("width", "960px")
         // .style("top", "50%")
@@ -212,7 +212,7 @@ function createTimeline(data) {
             openModal('.timeline-container', d.type, d.description);
         })
         .style("fill", "black")
-        .style("font-size", "9px")
+        .style("font-size", "10px")
         .style("font-family", "sans-serif")
         .style("clip-path", "url(#clip)");
 
@@ -254,7 +254,10 @@ function createTimeline(data) {
     .style("background", "rgb(255,255,255)")
     .style("border", "1px solid black")
     .style("border-radius", "5px")
-    .style("pointer-events", "none"); // Ensure the tooltip doesn't interfere with mouse events
+    .style("pointer-events", "none") // Ensure the tooltip doesn't interfere with mouse events
+    .style("z-index", "10000")
+    .style("font-size", "10px");
+    
 
 
         // figuring out why zoom event and click event are conflicting
@@ -367,7 +370,8 @@ function createTimeline(data) {
             .attr("x", d => x(d.secondDayOfMonth))
             .attr("y", d => d.verticalOffset * 40)
             .attr("width", 25)
-            .attr("height", 25);
+            .attr("height", 25)
+            .style("clip-path", "url(#clip)");
 
         mainChart.selectAll(".dotText")
             .data(filteredData)
@@ -376,6 +380,10 @@ function createTimeline(data) {
             .attr("x", d => x(d.secondDayOfMonth))
             .attr("y", d => height / 10 + d.verticalOffset * 40)
             .text(function(d) { return d.type; })
+            .style("fill", "black")
+            .style("font-size", "10px")
+            .style("font-family", "sans-serif")
+            .style("clip-path", "url(#clip)")
             .on("click", function(event, d) {
             console.log('dotText clicked', d);
             openModal(selector, d.type, d.description);
@@ -450,7 +458,7 @@ function createTimeline(data) {
                     tooltip.html("Start: " + d3.timeFormat("%B %d, %Y")(d3.select(evalStartNode).data()[0].date) +
                                   "<br/>End: " + d3.timeFormat("%B %d, %Y")(d3.select(evalCompleteNode).data()[0].date))
                         .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY - 28) + "px");
+                        .style("top", (event.pageY + 10) + "px");
                 })
                 .on("mouseout", function(d) {
                     d3.select(this).attr("fill", "#006400"); // Original color
