@@ -48,25 +48,11 @@
   
     },
     {
-        "type": "Diagnosis entered",
-        "date": "2024-01-10",
-        "description": "Diagnosis entered to the timeline",
-        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-  
-    },
-    {
         "type": "Samples sent to MOSC",
-        "date": "2024-02-10",
+        "date": "2024-01-10",
         "description": "Samples sent to MOSC to the timeline",
         "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
   
-    },
-    {
-        "type": "Results Received",
-        "date": "2024-07-31",
-        "description": "Results received to the timeline",
-        "iconUrl": "https://www.easydrawingtips.com/wp-content/uploads/2018/04/eye_drawing_step_by_step.png"
-        
     }
 
    
