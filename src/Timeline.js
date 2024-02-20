@@ -16,9 +16,6 @@ function createTimeline(data) {
         .style("position", "relative")
         .style("height", "550px")
         .style("width", "960px")
-        // .style("top", "50%")
-        // .style("left", "50%")
-        // .style("transform", "translate(-50%, -50%)")
         .style("background-color", "#ffffff")
         .style("border-width", "1px")
         .style("border-style", "ridge")
@@ -30,6 +27,7 @@ function createTimeline(data) {
         .attr("width", width)
         .attr("height", height)
         .attr("class", "timeline-svg");
+
 
     margin = {top: 20, right: 20, bottom: 110, left: 20},
     margin2 = {top: 420, right: 20, bottom: 30, left: 20},
@@ -88,8 +86,6 @@ function createTimeline(data) {
     // const startYear = currentYear - 4;
     // minDate = new Date(startYear, 0, 1); // Jan 1st of start year
     // maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
-    // console.log("minDate:", minDate)
-    // console.log("maxDate:", maxDate)
 
 
     // Parse dates
@@ -125,7 +121,7 @@ function createTimeline(data) {
     // Loop through the formatted data and update y-coordinate based on the count
     formattedData.forEach(function(d) {
         const monthKey = formatMonthYear(d.date);
-            // Extract the second day of the month
+        // Extract the second day of the month
         const secondDayOfMonth = new Date(d.date);
         secondDayOfMonth.setDate(2);
 
@@ -187,29 +183,51 @@ function createTimeline(data) {
         .style("stroke-dasharray", "7, 5")
         .style("stroke-width", "1");
 
+    // mainChart.selectAll(".dot")
+    //     .data(formattedData)
+    //     .enter().append("image") 
+    //     .attr("class", "dot") // Assign a class for styling
+    //     .attr("href", function(d) { return d.iconFile; })
+    //     .attr("x", d => x(d.secondDayOfMonth))
+    //     .attr("y", d => d.verticalOffset * 40) // Adjust the y-coordinate based on the vertical offset
+    //     .attr("width", 25) 
+    //     .attr("height", 25)
+    //     .style("fill", "steelblue")
+    //     .style("stroke", "#fff")
+    //     .style("clip-path", "url(#clip)")
+    //     .on("error", function() { console.log("Error loading image"); });
+
     mainChart.selectAll(".dot")
-        .data(formattedData)
-        .enter().append("image") 
-        .attr("class", "dot") // Assign a class for styling
-        .attr("xlink:href", function(d) { return d.iconFile; })
-        .attr("x", d => x(d.secondDayOfMonth))
-        .attr("y", d => d.verticalOffset * 40) // Adjust the y-coordinate based on the vertical offset
-        .attr("width", 25) 
-        .attr("height", 25)
-        .style("fill", "steelblue")
-        .style("stroke", "#fff")
-        .style("clip-path", "url(#clip)");
+    .data(formattedData)
+    .enter().append("circle") // Use circle instead of image
+    .attr("class", "dot") 
+    .attr("cx", d => x(d.date)) // Use cx for the center x position
+    .attr("cy", d => d.verticalOffset * 40) // Use cy for the center y position
+    .attr("r", 8) 
+    .style("fill", function(d) { return d.categoryColor; })
+    .style("stroke", "#fff") 
+    .style("clip-path", "url(#clip)");
+
 
     mainChart.selectAll(".dotText")
         .data(formattedData)
         .enter().append("text")
-        .attr("class", "dotText") // Assign a class for styling
-        .attr("x", d => x(d.secondDayOfMonth)) // Position the text to the right of the image
-        .attr("y", d => height / 10 + d.verticalOffset * 40) // Align the text vertically with the image
+        .attr("class", "dotText")
+        .attr("x", d => x(d.date)) // Position the text to the right of the circle
+        .attr("y", d => d.verticalOffset * 40 + 20) // Align the text vertically with the circle
+        .attr("text-anchor", "middle") // Center the text around its x position
         .text(function(d) { return d.type; })
         .on("click", function(event, d) {
             console.log('dotText clicked', d);
             openModal('.timeline-container', d.type, d.description);
+        })
+        .on("mouseover", function(event, d) {
+            d3.select(this)
+                .style("fill", function(d) { return d.categoryColor; }); // Change to any color you like on mouseover
+        })
+        .on("mouseout", function(event, d) {
+            d3.select(this)
+                .style("fill", "black"); // Revert to original color on mouseout
         })
         .style("fill", "black")
         .style("font-size", "10px")
@@ -217,13 +235,14 @@ function createTimeline(data) {
         .style("clip-path", "url(#clip)");
 
     updateRectangles();
+    drawCurrentDateMarker();
 
 
     navChart.selectAll(".dotContext")
         .data(formattedData)
         .enter().append("circle") 
         .attr("class", "dotContext") // Assign a class for styling
-        .attr("cx", d => x2(d.secondDayOfMonth))
+        .attr("cx", d => x2(d.date))
         .attr("cy", d => height2 / 4 + d.verticalOffset * 7)
         .attr("r", 3)
         .style("fill", function(d) { return d.categoryColor; })
@@ -260,7 +279,7 @@ function createTimeline(data) {
     
 
 
-        // figuring out why zoom event and click event are conflicting
+    // // figuring out why zoom event and click event are conflicting
     // svg.append("rect")
     //     .attr("class", "zoom")
     //     .attr("width", width)
@@ -292,14 +311,18 @@ function createTimeline(data) {
     
         x.domain(s.map(x2.invert, x2));
         
-    
         mainChart.selectAll(".dot")
-            .attr("x", d => x(d.secondDayOfMonth))
-            .attr("y", d => d.verticalOffset * 35);
+            // .attr("x", d => x(d.secondDayOfMonth))
+            // .attr("y", d => d.verticalOffset * 35);
+            .attr("cx", d => x(d.date)) // Use cx for the center x position
+            .attr("cy", d => d.verticalOffset * 40) // Use cy for the center y position
+            .attr("r", 8)
+
     
         mainChart.selectAll(".dotText")
-            .attr("x", d => x(d.secondDayOfMonth))
-            .attr("y", d => height / 10 + d.verticalOffset * 35);
+            .attr("x", d => x(d.date))
+            .attr("y", d => d.verticalOffset * 40 + 20)
+            .attr("text-anchor", "middle"); // Center the text around its x position
     
         mainChart.select(".axis--x").call(xAxis);
     
@@ -310,6 +333,7 @@ function createTimeline(data) {
             .style("stroke-width", "1");
 
         updateRectangles();
+        updateCurrentDateMarker();
             
     }
 
@@ -362,32 +386,52 @@ function createTimeline(data) {
         mainChart.selectAll(".dot, .dotText").remove();
 
         // Add new elements based on filtered data
+        // mainChart.selectAll(".dot")
+        //     .data(filteredData)
+        //     .enter().append("image")
+        //     .attr("class", "dot")
+        //     .attr("href", function(d) { return d.iconFile; })
+        //     .attr("x", d => x(d.secondDayOfMonth))
+        //     .attr("y", d => d.verticalOffset * 40)
+        //     .attr("width", 25)
+        //     .attr("height", 25)
+        //     .style("clip-path", "url(#clip)");
+
         mainChart.selectAll(".dot")
             .data(filteredData)
-            .enter().append("image")
-            .attr("class", "dot")
-            .attr("xlink:href", function(d) { return d.iconFile; })
-            .attr("x", d => x(d.secondDayOfMonth))
-            .attr("y", d => d.verticalOffset * 40)
-            .attr("width", 25)
-            .attr("height", 25)
+            .enter().append("circle") // Use circle instead of image
+            .attr("class", "dot") 
+            .attr("cx", d => x(d.date)) // Use cx for the center x position
+            .attr("cy", d => d.verticalOffset * 40) // Use cy for the center y position
+            .attr("r", 8) 
+            .style("fill", function(d) { return d.categoryColor; })
+            .style("stroke", "#fff")
             .style("clip-path", "url(#clip)");
+
 
         mainChart.selectAll(".dotText")
             .data(filteredData)
             .enter().append("text")
             .attr("class", "dotText")
-            .attr("x", d => x(d.secondDayOfMonth))
-            .attr("y", d => height / 10 + d.verticalOffset * 40)
+            .attr("x", d => x(d.date))
+            .attr("y", d => d.verticalOffset * 40 + 20)
             .text(function(d) { return d.type; })
+            .attr("text-anchor", "middle") // Center the text around its x position
             .style("fill", "black")
             .style("font-size", "10px")
             .style("font-family", "sans-serif")
             .style("clip-path", "url(#clip)")
             .on("click", function(event, d) {
-            console.log('dotText clicked', d);
-            openModal(selector, d.type, d.description);
-            }.bind(this));
+                openModal(selector, d.type, d.description);
+            }.bind(this))
+            .on("mouseover", function(event, d) {
+                d3.select(this)
+                    .style("fill", function(d) { return d.categoryColor; });
+            })
+            .on("mouseout", function(event, d) {
+                d3.select(this)
+                    .style("fill", "black"); // Revert to original color on mouseout
+            });
     }
 
 
@@ -423,20 +467,39 @@ function createTimeline(data) {
     function updateRectangles() {
         // Remove any existing rectangle
         mainChart.selectAll(".evaluation-rect").remove();
+        mainChart.selectAll(".application-rect").remove();
+        mainChart.selectAll(".diagnosis-rect").remove();
     
         // Find the evaluation events
         const evalStart = mainChart.selectAll(".dot")
             .filter(function(d) { return d.type === "Evaluation Started"; });
         const evalComplete = mainChart.selectAll(".dot")
             .filter(function(d) { return d.type === "Evaluation Completed"; });
+
+        // Find the "Application Submitted" amd "Medical Records Requested" event
+        const appSubmitted = mainChart.selectAll(".dot")
+            .filter(function(d) { return d.type === "Application Submitted"; });
+        const medRecordsRequested = mainChart.selectAll(".dot")
+            .filter(function(d) { return d.type === "Medical Records Requested"; });
+
+        // Find the "Samples sent to MOSC" and "Results Received" event
+        const samplesSent = mainChart.selectAll(".dot")
+            .filter(function(d) { return d.type === "Samples sent to MOSC"; });
+        const resulReceived = mainChart.selectAll(".dot")
+            .filter(function(d) { return d.type === "Results Received"; });
+
+        
+        // const evalCompleteText = mainChart.selectAll(".dotText")
+        //     .filter(function(d) { return d.type === "Evaluation Completed"; });
     
         if (!evalStart.empty() && !evalComplete.empty()) {
             const evalStartNode = evalStart.nodes()[0];
             const evalCompleteNode = evalComplete.nodes()[0];
-    
-            const startX = +d3.select(evalStartNode).attr('x') + 25;
-            const endX = +d3.select(evalCompleteNode).attr('x');
-            const startY = Math.max(+d3.select(evalStartNode).attr('y'), +d3.select(evalCompleteNode).attr('y')) + 10;
+            // const evalCompleteTextWidth = evalCompleteText.node().getBBox().width;
+
+            const startX = +d3.select(evalStartNode).attr('cx') - 8;
+            const endX = +d3.select(evalCompleteNode).attr('cx') + 8;
+            const startY = Math.max(+d3.select(evalStartNode).attr('cy'), +d3.select(evalCompleteNode).attr('cy')) - 11;
     
             // Draw the rectangle
             mainChart.append("rect")
@@ -444,11 +507,12 @@ function createTimeline(data) {
                 .attr("x", startX)
                 .attr("y", startY)
                 .attr("width", endX - startX)
-                .attr("height", 8) 
-                .attr("fill", "#006400")
+                .attr("height", 22) 
+                .attr("fill", "#99d099")
                 .attr("rx", 2)
                 .attr("ry", 2) 
                 .style("clip-path", "url(#clip)")
+                .style("opacity", 0.5)
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("fill", "orange"); // Highlight color
                     
@@ -461,7 +525,107 @@ function createTimeline(data) {
                         .style("top", (event.pageY + 10) + "px");
                 })
                 .on("mouseout", function(d) {
-                    d3.select(this).attr("fill", "#006400"); // Original color
+                    d3.select(this).attr("fill", "#99d099"); // Original color
+                    
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        }
+
+        if (!appSubmitted.empty() && !medRecordsRequested.empty()) {
+            const appSubmittedNode = appSubmitted.nodes()[0];
+            const medRecordsRequestedNode = medRecordsRequested.nodes()[0];
+    
+            const startX = +d3.select(appSubmittedNode).attr('cx') - 8; 
+            const endX = +d3.select(medRecordsRequestedNode).attr('cx') + 8;
+            const startY = Math.min(+d3.select(appSubmittedNode).attr('cy'), +d3.select(medRecordsRequestedNode).attr('cy')) - 10;
+    
+            // Draw the rectangle
+            mainChart.append("rect")
+                .attr("class", "application-rect")
+                .attr("x", startX)
+                .attr("y", startY)
+                .attr("width", endX - startX)
+                .attr("height", 20) 
+                .attr("fill", "#87acf1")
+                .attr("rx", 2)
+                .attr("ry", 2)
+                .style("clip-path", "url(#clip)")
+                .style("opacity", 0.5)
+                .on("mouseover", function(event, d) {
+                    d3.select(this).attr("fill", "orange"); // Highlight color
+                    
+                    // Update tooltip content
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html("Start: " + d3.timeFormat("%B %d, %Y")(d3.select(appSubmittedNode).data()[0].date) +
+                                  "<br/>End: " + d3.timeFormat("%B %d, %Y")(d3.select(medRecordsRequestedNode).data()[0].date))
+                        .style("left", (event.pageX) + "px")
+                        .style("top", (event.pageY + 10) + "px");
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("fill", "#87acf1"); // Reset to original color
+                    
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        }
+
+
+        if (!samplesSent.empty() && resulReceived.empty()) {
+            const samplesSentNode = samplesSent.nodes()[0];
+            
+            const samplesSentX = +d3.select(samplesSentNode).attr('cx') - 8;
+            const startY = +d3.select(samplesSentNode).attr('cy') - 10;
+    
+            // Current Date Rectangle
+            const currentDateX = x(new Date());
+            mainChart.append("rect")
+                .attr("class", "diagnosis-rect")
+                .attr("x", samplesSentX)
+                .attr("y", startY)
+                .attr("width", currentDateX - samplesSentX)
+                .attr("height", 20) 
+                .attr("fill", "darkred")
+                .attr("rx", 2)
+                .attr("ry", 2)
+                .style("clip-path", "url(#clip)")
+                .style("opacity", 0.5);
+    
+            // Two Months Later Rectangle
+            const twoMonthsLater = new Date();
+            twoMonthsLater.setMonth(twoMonthsLater.getMonth() + 2);
+            const twoMonthsLaterX = x(twoMonthsLater);
+            mainChart.append("rect")
+                .attr("class", "diagnosis-rect")
+                .attr("x", samplesSentX)
+                .attr("y", startY)
+                .attr("width", twoMonthsLaterX - samplesSentX)
+                .attr("height", 20)
+                .attr("fill", "lightcoral")
+                .attr("rx", 2)
+                .attr("ry", 2)
+                .style("clip-path", "url(#clip)")
+                .style("opacity", 0.5)
+                .on("mouseover", function(event, d) {
+                    d3.select(this).attr("fill", "orange"); // Highlight color
+                    
+                    // Update tooltip content
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html("Start: " + d3.timeFormat("%B %d, %Y")(d3.select(samplesSentNode).data()[0].date) +
+                                  "<br/>End: " + d3.timeFormat("%B %d, %Y")(twoMonthsLater) + 
+                                  "<span style='color: red;'> Estimated</span>" +
+                                  "<br/>Current Date: " + d3.timeFormat("%B %d, %Y")(new Date()))
+                        .style("left", (event.pageX) + "px")
+                        .style("top", (event.pageY + 10) + "px");
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("fill", "lightcoral"); // Reset to original color
                     
                     tooltip.transition()
                         .duration(500)
@@ -469,13 +633,34 @@ function createTimeline(data) {
                 });
         }
     }
+
+
+    function drawCurrentDateMarker() {
+        const currentDate = new Date();
+        const currentDateX = x(currentDate);
+        const symbolGenerator = d3.symbol().type(d3.symbolDiamond).size(100);
+    
+        mainChart.append('path')
+            .attr('d', symbolGenerator())
+            .attr('transform', `translate(${currentDateX}, 50)`)
+            .attr('fill', 'darkred')
+            .attr('class', 'current-date-marker');
+    }
+
+    function updateCurrentDateMarker() {
+        const currentDate = new Date();
+        const currentDateX = x(currentDate); // Recalculate x position for the current date
+        
+        mainChart.select('.current-date-marker') 
+            .attr('transform', `translate(${currentDateX}, 40)`); // Update position;
+    }
     
     
 
 
     return {
-        dom:container.node(),
-        update:updateChart
+        dom: container.node(),
+        update: updateChart
     }
 }
 
