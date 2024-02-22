@@ -42,7 +42,6 @@ function createTimeline(data) {
     y2 = d3.scaleLinear().range([height2, 0]);
 
     xAxis = d3.axisBottom(x)
-                // .ticks(d3.timeMonth.every(1))  // Show ticks for every month
                 .tickFormat(d3.timeFormat("%b %Y"))
                 .tickSize(-height);
 
@@ -74,19 +73,13 @@ function createTimeline(data) {
 
     mainChart = svg.append("g")
         .attr("class", "mainChart")
+        .style("clip-path", "url(#clip)")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     navChart = svg.append("g")
         .attr("class", "navChart")
+        .style("clip-path", "url(#clip)")
         .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
-
-    
-    // const currentDate = new Date();
-    // const currentYear = currentDate.getFullYear();
-    // const startYear = currentYear - 4;
-    // minDate = new Date(startYear, 0, 1); // Jan 1st of start year
-    // maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
-
 
     // Parse dates
     const parseDate = d3.timeParse("%Y-%m-%d");
@@ -112,7 +105,6 @@ function createTimeline(data) {
     x2.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
 
     xTop.domain(x.domain());
-    
     y2.domain(y.domain());
 
     // Add a count for each month to keep track of events in the same month
@@ -205,8 +197,7 @@ function createTimeline(data) {
     .attr("cy", d => d.verticalOffset * 40) // Use cy for the center y position
     .attr("r", 8) 
     .style("fill", function(d) { return d.categoryColor; })
-    .style("stroke", "#fff") 
-    .style("clip-path", "url(#clip)");
+    .style("stroke", "#fff");
 
 
     mainChart.selectAll(".dotText")
@@ -231,12 +222,12 @@ function createTimeline(data) {
         })
         .style("fill", "black")
         .style("font-size", "10px")
-        .style("font-family", "sans-serif")
-        .style("clip-path", "url(#clip)");
+        .style("font-family", "sans-serif");
 
-    updateRectangles();
+
     drawCurrentDateMarker();
-
+    updateRectangles();
+  
 
     navChart.selectAll(".dotContext")
         .data(formattedData)
@@ -246,8 +237,7 @@ function createTimeline(data) {
         .attr("cy", d => height2 / 4 + d.verticalOffset * 7)
         .attr("r", 3)
         .style("fill", function(d) { return d.categoryColor; })
-        .style("stroke", "#fff")
-        .style("clip-path", "url(#clip)");
+        .style("stroke", "#fff");
 
     navChart.append("g")
         .attr("class", "axis axis--x")
@@ -332,9 +322,10 @@ function createTimeline(data) {
             .style("stroke-dasharray", "7, 5")
             .style("stroke-width", "1");
 
-        updateRectangles();
+
         updateCurrentDateMarker();
-            
+        updateRectangles();
+          
     }
 
 
@@ -405,8 +396,7 @@ function createTimeline(data) {
             .attr("cy", d => d.verticalOffset * 40) // Use cy for the center y position
             .attr("r", 8) 
             .style("fill", function(d) { return d.categoryColor; })
-            .style("stroke", "#fff")
-            .style("clip-path", "url(#clip)");
+            .style("stroke", "#fff");
 
 
         mainChart.selectAll(".dotText")
@@ -420,7 +410,6 @@ function createTimeline(data) {
             .style("fill", "black")
             .style("font-size", "10px")
             .style("font-family", "sans-serif")
-            .style("clip-path", "url(#clip)")
             .on("click", function(event, d) {
                 openModal(selector, d.type, d.description);
             }.bind(this))
@@ -511,7 +500,6 @@ function createTimeline(data) {
                 .attr("fill", "#99d099")
                 .attr("rx", 2)
                 .attr("ry", 2) 
-                .style("clip-path", "url(#clip)")
                 .style("opacity", 0.5)
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("fill", "orange"); // Highlight color
@@ -551,7 +539,6 @@ function createTimeline(data) {
                 .attr("fill", "#87acf1")
                 .attr("rx", 2)
                 .attr("ry", 2)
-                .style("clip-path", "url(#clip)")
                 .style("opacity", 0.5)
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("fill", "orange"); // Highlight color
@@ -592,7 +579,6 @@ function createTimeline(data) {
                 .attr("fill", "darkred")
                 .attr("rx", 2)
                 .attr("ry", 2)
-                .style("clip-path", "url(#clip)")
                 .style("opacity", 0.5);
     
             // Two Months Later Rectangle
@@ -605,10 +591,9 @@ function createTimeline(data) {
                 .attr("y", startY)
                 .attr("width", twoMonthsLaterX - samplesSentX)
                 .attr("height", 20)
-                .attr("fill", "lightcoral")
+                .attr("fill", "#ff0000")
                 .attr("rx", 2)
                 .attr("ry", 2)
-                .style("clip-path", "url(#clip)")
                 .style("opacity", 0.5)
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("fill", "orange"); // Highlight color
@@ -625,7 +610,7 @@ function createTimeline(data) {
                         .style("top", (event.pageY + 10) + "px");
                 })
                 .on("mouseout", function(d) {
-                    d3.select(this).attr("fill", "lightcoral"); // Reset to original color
+                    d3.select(this).attr("fill", "#ff0000"); // Reset to original color
                     
                     tooltip.transition()
                         .duration(500)
@@ -642,7 +627,7 @@ function createTimeline(data) {
     
         mainChart.append('path')
             .attr('d', symbolGenerator())
-            .attr('transform', `translate(${currentDateX}, 50)`)
+            .attr('transform', `translate(${currentDateX}, 40)`)
             .attr('fill', 'darkred')
             .attr('class', 'current-date-marker');
     }
@@ -652,12 +637,10 @@ function createTimeline(data) {
         const currentDateX = x(currentDate); // Recalculate x position for the current date
         
         mainChart.select('.current-date-marker') 
-            .attr('transform', `translate(${currentDateX}, 40)`); // Update position;
+            .attr('transform', `translate(${currentDateX}, 40)`);
     }
     
     
-
-
     return {
         dom: container.node(),
         update: updateChart
