@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 export function Modal() {
     let modal;
     
-    function createModal(selector, {show, type, description}) {
+    function createModal(selector, {show, name, description}) {
         // Remove any existing modal first
         d3.select(selector).selectAll(".modal").remove();
 
@@ -44,7 +44,7 @@ export function Modal() {
                 modal.remove(); // Close the modal
             });
 
-        content.append("h2").text(type);
+        content.append("h2").text(name);
         content.append("p").text(description);
     }
     

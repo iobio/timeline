@@ -1,9 +1,14 @@
 class Event {
-    constructor(type, date, description, iconUrl) {
-      this.type = type;
+    constructor(id, name, date, description, iconUrl, pairEventId, eventType, status, estimatedCompleteDate ) {
+      this.id = id
+      this.name = name;
       this.date = date;
       this.description = description;
       this.iconUrl = iconUrl;
+      this.pairEventId = pairEventId;
+      this.eventType = eventType;
+      this.status = status;
+      this.estimatedCompleteDate = estimatedCompleteDate;
       this.formattedDate = this.formatDate();
       this.color = this.setColor();
       this.category = this.setCategory();
@@ -24,8 +29,8 @@ class Event {
             "Results Received": "#FF0000",
           };
       
-          // Set the color based on the event type
-          return typeToColorMapping[this.type] || null;
+          // Set the color based on the event name
+          return typeToColorMapping[this.name] || null;
 
       
     }
@@ -58,8 +63,8 @@ class Event {
             "Results Received": "Diagnosis",
           };
       
-          // Set the category based on the event type
-          return typeToCategoryMapping[this.type] || null;
+          // Set the category based on the event name
+          return typeToCategoryMapping[this.name] || null;
     }
   }
   
