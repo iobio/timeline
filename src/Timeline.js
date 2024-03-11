@@ -5,7 +5,8 @@ import {Modal} from './Modal.js';
 
 function createTimeline(data) {
     let x, x2, xTop, y, y2, mainChart, navChart, width, height, height2, xAxis, xAxisTop, xAxis2, yAxis_left, 
-    yAxis_right, brush, container,svg, margin, margin2, defaultSelection, formattedData, minDate, maxDate, mainChartContent, navChartContent, brushHandle;
+    yAxis_right, brush, container,svg, margin, margin2, defaultSelection, formattedData, minDate, maxDate, 
+    mainChartContent, navChartContent, brushHandle;
 
 
     // Parse dates
@@ -24,12 +25,48 @@ function createTimeline(data) {
     container = d3.create("div")
         .attr("class", "timeline-container")
         .style("position", "relative")
-        .style("height", "500px")
+        .style("height", "530px")
         .style("width", "960px")
         .style("background-color", "#ffffff")
         .style("border-width", "1px")
         .style("border-style", "ridge")
         .style("border-color", "rgba(0, 0, 0, 0.12)");
+
+    // Create the legend container
+    const legendContainer = container.append("div")
+        .attr("class", "legend-container")
+        .style("padding-top", "10px")
+        .style("padding-right", "30px")
+        .style("display", "flex")
+        .style("flex-wrap", "wrap")
+        .style("justify-content", "flex-end");
+
+        const categories = ["Application", "Evaluation", "Diagnosis"];
+        const colors = ["#699BF7", "#006400", "#FF0000"];
+        const colorScale = d3.scaleOrdinal()
+            .domain(categories)
+            .range(colors);
+        
+        // Populate the legend with categories and colors
+        categories.forEach(category => {
+            const legendItem = legendContainer.append("div")
+                .style("display", "flex")
+                .style("align-items", "center")
+                .style("margin-left", "20px");
+        
+            legendItem.append("div")
+                .style("width", "12px")
+                .style("height", "12px")
+                .style("border-radius", "50%")
+                .style("background-color", colorScale(category))
+                .style("margin-right", "5px");
+        
+            legendItem.append("span")
+                .text(category)
+                .style("font-size", "12px")
+                .style("font-family", "sans-serif");
+        });
+
 
     width = 960;
     height = 500;
@@ -38,8 +75,8 @@ function createTimeline(data) {
         .attr("height", height)
         .attr("class", "timeline-svg");
 
-    margin = {top: 20, right: 20, bottom: 110, left: 20},
-    margin2 = {top: 420, right: 20, bottom: 30, left: 20},
+    margin = {top: 20, right: 30, bottom: 110, left: 30},
+    margin2 = {top: 420, right: 30, bottom: 30, left: 30},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
     height2 = +svg.attr("height") - margin2.top - margin2.bottom,
@@ -112,7 +149,6 @@ function createTimeline(data) {
     console.log("formattedData", formattedData);
 
     let lastEventDate = formattedData[formattedData.length - 1].date;
-
     let lastEventYearStart = d3.timeYear.floor(lastEventDate); // Start of the year of the last event
     let nextYearStart = d3.timeYear.offset(lastEventYearStart, 1); // Start of the next year
 
@@ -124,32 +160,75 @@ function createTimeline(data) {
     mainChart.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("path, line")
+        .style("stroke", "#c5c2c2")
+        .style("stroke-width", "1");
+
+    mainChart.append("g")
+        .attr("class", "axis axis--x-top")
+        .attr("transform", "translate(0,0)")
+        .call(xAxisTop)
+        .selectAll("path, line")
+        .style("stroke", "#c5c2c2")
+        .style("stroke-width", "1");
 
     mainChart.append("g")
         .attr("class", "axis axis--y")
-        .call(yAxis_left);
+        .call(yAxis_left)
+        .selectAll("path, line")
+        .style("stroke", "#c5c2c2")
+        .style("stroke-width", "1");
+        
 
     mainChart.append("g")
         .attr("class", "axis axis--y")
         .attr("transform", "translate(" + width + ",0)")
-        .call(yAxis_right);
+        .call(yAxis_right)
+        .selectAll("path, line")
+        .style("stroke", "#c5c2c2")
+        .style("stroke-width", "1");
 
     mainChart.selectAll(".tick line")
         .attr("class", "tick-line")
         .style("stroke", "rgb(221, 221, 221)")
-        .style("stroke-dasharray", "7, 5")
+        .style("stroke-dasharray", "2, 2")
         .style("stroke-width", "1");
 
     mainChartContent.selectAll(".dot")
-    .data(formattedData)
-    .enter().append("circle") // Use circle instead of image
-    .attr("class", "dot") 
-    .attr("cx", d => x(d.date)) // Use cx for the center x position
-    .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
-    .attr("r", 8) 
-    .style("fill", function(d) { return d.color; })
-    .style("stroke", "#fff");
+        .data(formattedData)
+        .enter().append("image") 
+        .attr("class", "dot") // Assign a class for styling
+        .attr("href", function(d) { return d.iconUrl; })
+        .attr("x", d => x(d.date)) // Use x for the center x position
+        .attr("y", d => d.rowNumber * 40) // Use y for the center y position
+        .attr("width", 20) 
+        .attr("height", 20)
+        // .enter().append("circle") // Use circle instead of image
+        // .attr("class", "dot") 
+        // .attr("cx", d => x(d.date)) // Use cx for the center x position
+        // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
+        // .attr("r", 8) 
+        // .style("fill", function(d) { return colorScale(d.category); })
+        .style("stroke", "#fff")
+        .on("mouseover", function(event, d) {
+            const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>Status: Completed</span>" + "<br/>" +
+            "Date: " + d3.timeFormat("%B %d, %Y")(d.date);
+
+            // Update tooltip content
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            tooltip.html(tooltipText)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseout", function(d) {
+            
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
 
 
     mainChartContent.selectAll(".dotText")
@@ -157,8 +236,8 @@ function createTimeline(data) {
         .enter().append("text")
         .attr("class", "dotText")
         .attr("x", d => x(d.date))
-        .attr("y", d => d.rowNumber * 40 + 20) // Align the text vertically with the circle
-        .attr("text-anchor", "middle") // Center the text around its x position
+        .attr("y", d => d.rowNumber * 40 + 30) // Align the text vertically with the circle
+        // .attr("text-anchor", "middle") // Center the text around its x position
         .text(function(d) { return d.name; })
         .on("click", function(event, d) {
             console.log('dotText clicked', d);
@@ -166,7 +245,7 @@ function createTimeline(data) {
         })
         .on("mouseover", function(event, d) {
             d3.select(this)
-                .style("fill", function(d) { return d.color; });
+                .style("fill", function(d) { return colorScale(d.category); });
         })
         .on("mouseout", function(event, d) {
             d3.select(this)
@@ -186,63 +265,32 @@ function createTimeline(data) {
         .enter().append("circle") 
         .attr("class", "dotContext") // Assign a class for styling
         .attr("cx", d => x2(d.date))
-        .attr("cy", d => height2 / 4 + d.rowNumber * 7)
+        .attr("cy", d => d.rowNumber * 7)
         .attr("r", 3)
-        .style("fill", function(d) { return d.color; })
+        .style("fill", function(d) { return colorScale(d.category); })
         .style("stroke", "#fff");
 
     navChart.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height2 + ")")
-        .call(xAxis2);
-
-    svg.append("g")
-        .attr("class", "axis axis--x-top")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .call(xAxisTop);
+        .call(xAxis2)
+        .selectAll("path, line")
+        .style("stroke", "#c5c2c2")
+        .style("stroke-width", "1");
 
     const navBrush = navChart.append("g")
         .attr("class", "brush")
         .call(brush)
         .call(brush.move, defaultSelection);
 
-        // style brush resize handle
+    // style brush resize handle
     const brushHandlePath = d => {
         const e = +(d.type === "e"),
         x = e ? 1 : -1,
         y = height2;
         return (
-        "M" +
-        0.5 * x +
-        "," +
-        y +
-        "A6,6 0 0 " +
-        e +
-        " " +
-        6.5 * x +
-        "," +
-        (y + 6) +
-        "V" +
-        (2 * y - 6) +
-        "A6,6 0 0 " +
-        e +
-        " " +
-        0.5 * x +
-        "," +
-        2 * y +
-        "Z" +
-        "M" +
-        2.5 * x +
-        "," +
-        (y + 8) +
-        "V" +
-        (2 * y - 8) +
-        "M" +
-        4.5 * x +
-        "," +
-        (y + 8) +
-        "V" +
-        (2 * y - 8)
+        "M" + 0.5 * x + "," + y + "A6,6 0 0 " + e + " " + 6.5 * x + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + 0.5 * x + "," +
+        2 * y + "Z" + "M" + 2.5 * x + "," + (y + 8) + "V" + (2 * y - 8) + "M" + 4.5 * x + "," + (y + 8) + "V" + (2 * y - 8)
         );
     };
 
@@ -311,8 +359,9 @@ function createTimeline(data) {
     .style("z-index", "10000")
     .style("font-size", "10px");
 
-    
-    
+
+
+
     function updateAxis(event) {
         let selection = event.selection || defaultSelection;
 
@@ -320,19 +369,25 @@ function createTimeline(data) {
         endDate = x2.invert(selection[1]);
 
         x.domain([startDate, endDate]); // Update x domain with new dates
+        let yearsDiff = endDate.getFullYear() - startDate.getFullYear();
 
-        let monthsDiff = d3.timeMonth.count(startDate, endDate);
-
-        if (monthsDiff > 18) {
-            xAxis.ticks(d3.timeMonth.every(4)); // If more than 18 months, show a tick every three months
+        // Dynamically adjust ticks based on date range
+        if (yearsDiff <= 1) {
+            xAxis.ticks(d3.timeMonth.every(1));
+        } else if (yearsDiff <= 2) {
+            xAxis.ticks(d3.timeMonth.every(2));
+        } else if (yearsDiff <= 5) {
+            xAxis.ticks(d3.timeMonth.every(3));
+        } else if (yearsDiff <= 10) {
+            xAxis.ticks(d3.timeMonth.every(6));
         } else {
-            xAxis.ticks(d3.timeMonth.every(1)); // Otherwise, show a tick for every month
+            xAxis.ticks(d3.timeYear.every(1));
         }
 
         // Apply the updated xAxis with a transition
         mainChart.select(".axis--x")
           .transition()
-          .duration(700)
+          .duration(750)
           .call(xAxis);
 
       }
@@ -355,33 +410,32 @@ function createTimeline(data) {
         }
 
         mainChartContent.selectAll(".dot")
-            .attr("cx", d => x(d.date)) // Use cx for the center x position
-            .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
-            .attr("r", 8)
+            // .attr("cx", d => x(d.date)) // Use cx for the center x position
+            // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
+            // .attr("r", 8)
+            .attr("x", d => x(d.date)) // Use cx for the center x position
+            .attr("y", d => d.rowNumber * 40) // Use cy for the center y position
+            .attr("width", 20) 
+            .attr("height", 20)
 
         // Calculate the scale factor based on the domain of the x-axis
         const currentDomain = x.domain();
-
         const totalDomain = x2.domain();
-
         const scaleFactor = (totalDomain[1] - totalDomain[0]) / (currentDomain[1] - currentDomain[0]);
-
-        const textSizeScaleFactor = Math.min(10, scaleFactor);
+        const textSizeScaleFactor = Math.min(12, scaleFactor);
 
         mainChartContent.selectAll(".dotText")
             .attr("x", d => x(d.date))
-            .attr("y", d => d.rowNumber * 40 + 20)
-            .attr("text-anchor", "middle") // Center the text around its x position
+            .attr("y", d => d.rowNumber * 40 + 30)
+            // .attr("text-anchor", "middle") // Center the text around its x position
             .style("font-size", textSizeScaleFactor + "px");
-            
-    
+        
         mainChart.selectAll(".tick line")
             .attr("class", "tick-line")
             .style("stroke", "rgb(222, 221, 221)")
-            .style("stroke-dasharray", "7, 5")
+            .style("stroke-dasharray", "2, 2")
             .style("stroke-width", "1");
 
-       
         if (selection) {
             brushHandle = navChart.selectAll(".handle--custom")
                                     .data([{ type: "w" }, { type: "e" }])
@@ -396,6 +450,8 @@ function createTimeline(data) {
         updateAxis(event);
           
     }
+
+
 
     
 
@@ -466,13 +522,38 @@ function createTimeline(data) {
 
         mainChartContent.selectAll(".dot")
             .data(filteredData)
-            .enter().append("circle") // Use circle instead of image
-            .attr("class", "dot") 
-            .attr("cx", d => x(d.date)) // Use cx for the center x position
-            .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
-            .attr("r", 8) 
-            .style("fill", function(d) { return d.color; })
-            .style("stroke", "#fff");
+            // .enter().append("circle") // Use circle instead of image
+            // .attr("class", "dot") 
+            // .attr("cx", d => x(d.date)) // Use cx for the center x position
+            // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
+            // .attr("r", 8) 
+            // .style("fill", function(d) { return colorScale(d.category); })
+            // .style("stroke", "#fff")
+            .enter().append("image") 
+            .attr("class", "dot") // Assign a class for styling
+            .attr("href", function(d) { return d.iconUrl; })
+            .attr("x", d => x(d.date)) // Use x for the center x position
+            .attr("y", d => d.rowNumber * 40) // Use y for the center y position
+            .attr("width", 20) 
+            .attr("height", 20)
+            .on("mouseover", function(event, d) {
+                const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>Status: Completed</span>" + "<br/>" +
+                "Date: " + d3.timeFormat("%B %d, %Y")(d.date);
+    
+                // Update tooltip content
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                tooltip.html(tooltipText)
+                    .style("left", (event.pageX) + "px")
+                    .style("top", (event.pageY + 10) + "px");
+            })
+            .on("mouseout", function(d) {
+                
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
 
 
         mainChartContent.selectAll(".dotText")
@@ -480,9 +561,9 @@ function createTimeline(data) {
             .enter().append("text")
             .attr("class", "dotText")
             .attr("x", d => x(d.date))
-            .attr("y", d => d.rowNumber * 40 + 20)
+            .attr("y", d => d.rowNumber * 40 + 30)
             .text(function(d) { return d.name; })
-            .attr("text-anchor", "middle") // Center the text around its x position
+            // .attr("text-anchor", "middle") // Center the text around its x position
             .style("fill", "black")
             .style("font-size", "10px")
             .style("font-family", "sans-serif")
@@ -491,7 +572,7 @@ function createTimeline(data) {
             }.bind(this))
             .on("mouseover", function(event, d) {
                 d3.select(this)
-                    .style("fill", function(d) { return d.color; });
+                    .style("fill", function(d) { return colorScale(d.category); });
             })
             .on("mouseout", function(event, d) {
                 d3.select(this)
@@ -513,9 +594,9 @@ function createTimeline(data) {
             .enter().append("circle")
             .attr("class", "dotContext")
             .attr("cx", d => x2(d.date))
-            .attr("cy", d => height2 / 4 + d.rowNumber * 7)
+            .attr("cy", d => d.rowNumber * 7)
             .attr("r", 3)
-            .style("fill", function(d) { return d.color; });
+            .style("fill", function(d) { return colorScale(d.category); });
     
     }
 
@@ -572,7 +653,10 @@ function createTimeline(data) {
                 const pairedRow = findPairedEventRow(event.pairEventId);
                 if (pairedRow) {
                     rows[pairedRow].push(event);
-                    rowEndDate[pairedRow] = new Date(Math.max(new Date(rowEndDate[pairedRow]), new Date(event.date), new Date(event.estimatedCompleteDate || event.date)));
+                    // rowEndDate[pairedRow] = new Date(Math.max(new Date(rowEndDate[pairedRow]), new Date(event.date), new Date(event.estimatedCompleteDate || event.date)));
+                    let newEndDate = new Date(Math.max(new Date(rowEndDate[pairedRow]), new Date(event.date), new Date(event.estimatedCompleteDate || event.date)));
+                    newEndDate.setDate(newEndDate.getDate() + 12); // Add 12 days
+                    rowEndDate[pairedRow] = newEndDate;
                     placed = true;
                 }
             }
@@ -587,7 +671,10 @@ function createTimeline(data) {
                 // Check if the event can be placed in this row based on rowEndDate
                 if (new Date(event.date) > rowEndDate[rowNum]) {
                     rows[rowNum].push(event);
-                    rowEndDate[rowNum] = new Date(event.date);
+                    // rowEndDate[rowNum] = new Date(event.date);
+                    let newEndDate = new Date(event.date);
+                    newEndDate.setDate(newEndDate.getDate() + 12); // Add 12 days
+                    rowEndDate[rowNum] = newEndDate;
                     placed = true;
     
                     // If the event is paired and its pair is not yet placed, place it in the same row
@@ -595,12 +682,18 @@ function createTimeline(data) {
                         const pair = eventPairs[event.pairEventId].find(e => e.id !== event.id);
                         if (pair) {
                             rows[rowNum].push(pair);
-                            rowEndDate[rowNum] = new Date(Math.max(new Date(rowEndDate[rowNum]), new Date(pair.date), new Date(pair.estimatedCompleteDate || pair.date)));
+                            // rowEndDate[rowNum] = new Date(Math.max(new Date(rowEndDate[rowNum]), new Date(pair.date), new Date(pair.estimatedCompleteDate || pair.date)));
+                            let newEndDate = new Date(Math.max(new Date(rowEndDate[rowNum]), new Date(pair.date), new Date(pair.estimatedCompleteDate || pair.date)));
+                            newEndDate.setDate(newEndDate.getDate() + 12); // Add 12 days
+                            rowEndDate[rowNum] = newEndDate;
                         }
                     }
                     if (event.eventType === "paired" && eventPairs[event.pairEventId].length === 1) {
                         rows[rowNum].push(event);
-                        rowEndDate[rowNum] = new Date(Math.max(new Date(rowEndDate[rowNum]), new Date(event.date), new Date(event.estimatedCompleteDate || event.date), new Date(currentDate)));
+                        // rowEndDate[rowNum] = new Date(Math.max(new Date(rowEndDate[rowNum]), new Date(event.date), new Date(event.estimatedCompleteDate || event.date), new Date(currentDate)));
+                        let newEndDate = new Date(Math.max(new Date(rowEndDate[rowNum]), new Date(event.date), new Date(event.estimatedCompleteDate || event.date), new Date(currentDate)));
+                        newEndDate.setDate(newEndDate.getDate() + 12); // Add 12 days
+                        rowEndDate[rowNum] = newEndDate;
                     }
                 }
             }
@@ -622,15 +715,32 @@ function createTimeline(data) {
         // Remove any existing rectangles
         mainChartContent.selectAll(".event-rect").remove();
     
-        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isEstimatedEndDate = false, isSingleEvent = false) => {
-            const startX = x(startDate) - 8; 
-            let endX = x(endDate) + (adjustEndX ? 8 : 0);
-            const opacity = isSingleEvent ? 0.5 : 0.3;
+        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isEstimatedEndDate = false) => {
+            // const startX = x(startDate) - 8; 
+            const startX = x(startDate); 
+            let endX;
+            if (isEstimatedEndDate) {
+                endX = x(new Date())
+            }  else {
+                endX = x(endDate) + (adjustEndX ? 20 : 0);
+                
+            }
+
+            // const opacity = isSingleEvent ? 0.5 : 0.3;
+            const opacity = 0.3;
+
+            // let recHeight;
+            // if (endDate.getTime() === (new Date()).getTime()) {
+            //     recHeight = 20;
+            //     // startY = startY - 3;
+            // } else {
+            //     recHeight = 20;
+            // }
 
             mainChartContent.append("rect")
                 .attr("class", rectClass)
                 .attr("x", startX)
-                .attr("y", startY)
+                .attr("y", startY + 10)
                 .attr("width", endX - startX)
                 .attr("height", 20) 
                 .attr("fill", fillColor)
@@ -638,11 +748,11 @@ function createTimeline(data) {
                 .attr("ry", 2)
                 .style("opacity", opacity)
                 .on("mouseover", function(event, d) {
-                    d3.select(this).attr("fill", "orange"); // Highlight color
-                    
                     const endDateText = isEstimatedEndDate ? "<span style='color: red;'>Estimated End:</span> "  : "End: ";
-                    const tooltipText = "Start: " + d3.timeFormat("%B %d, %Y")(startDate) +
-                                    "<br/>" + endDateText + d3.timeFormat("%B %d, %Y")(endDate);
+                    const statusText = isEstimatedEndDate ? "Status: In Progress" : "Status: Completed";
+                    const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>" + statusText + "</span>" +
+                                        "<br/>" + "Start: " + d3.timeFormat("%B %d, %Y")(startDate) +
+                                        "<br/>" + endDateText + d3.timeFormat("%B %d, %Y")(endDate);
                 
                     // Update tooltip content
                     tooltip.transition()
@@ -653,8 +763,6 @@ function createTimeline(data) {
                         .style("top", (event.pageY + 10) + "px");
                 })
                 .on("mouseout", function(d) {
-                    d3.select(this).attr("fill", fillColor); // Reset to original color
-                    
                     tooltip.transition()
                         .duration(500)
                         .style("opacity", 0);
@@ -677,13 +785,13 @@ function createTimeline(data) {
             const startY = pair[0].rowNumber * 40 - 10;
     
             if (pair.length === 2) {
-                drawRectangle(pair[0].date, pair[1].date, startY, "event-rect", pair[0].color, true, false, false);
+                drawRectangle(pair[0].date, pair[1].date, startY, "event-rect", colorScale(pair[0].category), true, false);
             } else if (pair.length === 1) {
                 // For a single event extending to the current date, adjustEndX is false, and check if it's estimated
-                drawRectangle(pair[0].date, new Date(), startY, "event-rect", pair[0].color, false, false, true);
+                // drawRectangle(pair[0].date, new Date(), startY, "event-rect", colorScale(pair[0].category), false, false);
                 // If there's an estimatedCompleteDate, draw a rectangle from the start date to the estimated date
                 if (pair[0].estimatedCompleteDate) {
-                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", pair[0].color, true, true, true);
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), true, true);
                 }
             }
         });
@@ -735,7 +843,7 @@ function createTimeline(data) {
             .attr('x', currentDateX)
             .attr('y', height) 
             .attr('dy', '-0.5em')
-            .attr('text-anchor', 'middle')
+            .attr('text-anchor', 'start')
             .attr('fill', 'red')
             .attr('class', 'current-date-annotation')
             .text("Today " + dateFormat(currentDate))
