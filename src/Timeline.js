@@ -13,7 +13,7 @@ function createTimeline(data) {
     const parseDate = d3.timeParse("%Y-%m-%d");
 
     formattedData = data.events.map(
-        (event) => new Event(event.id, event.name, parseDate(event.date), event.description, event.iconUrl, event.pairEventId,
+        (event) => new Event(event.id, event.name, parseDate(event.date), event.description, event.category, event.iconUrl, event.pairEventId,
                              event.eventType, event.status, parseDate(event.estimatedCompleteDate))
     );
 
@@ -41,7 +41,7 @@ function createTimeline(data) {
         .style("flex-wrap", "wrap")
         .style("justify-content", "flex-end");
 
-        const categories = ["Application", "Evaluation", "Diagnosis"];
+        const categories = Array.from(new Set(formattedData.map(d => d.category)));
         const colors = ["#699BF7", "#006400", "#FF0000"];
         const colorScale = d3.scaleOrdinal()
             .domain(categories)
