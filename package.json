@@ -1,5 +1,5 @@
 {
-  "name": "iobio.timeline",
+  "name": "iobio-timeline",
   "version": "1.0.0",
   "description": "This is a visualization timeline component",
   "main": "src/Timeline.js",
@@ -17,5 +17,13 @@
   "devDependencies": {
     "esbuild": "^0.20.0",
     "vite": "^5.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iobio/timeline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iobio/timeline/issues"
+  },
+  "homepage": "https://github.com/iobio/timeline#readme"
 }
