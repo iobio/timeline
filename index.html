@@ -14,13 +14,35 @@
     <!-- <script src="https://cdn.jsdelivr.net/gh/iobio/timeline/dist/timeline.min.js"></script> -->
 
     <script type="module">
-        import {createTimeline} from './src/Timeline.js';
-        import events from './src/dummy_data.json';
-       
+        import {createTimeline, Event} from './src/Timeline.js';
 
-        const tl = createTimeline(events);
-        document.body.appendChild(tl.dom);
+        async function fetchData() {
+            try {
+                const response = await fetch('./src/dummy_data.json');
+                const jsonData = await response.json();
 
+                const events = jsonData.events.map(
+                  (event) => new Event(event.id, event.name, event.date, event.description, event.category, event.iconUrl, event.pairEventId,
+                                 event.eventType, event.status, event.estimatedCompleteDate)
+                );
+                return events;
+            } catch (error) {
+                console.error('Error fetching or parsing data:', error);
+            }
+        }
+
+        async function init() {
+            const events = await fetchData();
+            if(events) {
+                const tl = createTimeline(events);
+                document.body.appendChild(tl.dom);
+            } else {
+                console.error('Failed to fetch events.');
+            }
+        }
+
+        // Initialize the timeline
+        init();
     </script>
 
   </body>

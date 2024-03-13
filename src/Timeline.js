@@ -1,6 +1,9 @@
 import * as d3 from 'd3';
 import Event from './Event.js'; 
 import {Modal} from './Modal.js';
+import {SelectionButton} from './SelectionButton.js';
+import {SearchMenu} from './SearchMenu.js';
+import {Table} from './Table.js';
 
 
 function createTimeline(data) {
@@ -12,15 +15,13 @@ function createTimeline(data) {
     // Parse dates
     const parseDate = d3.timeParse("%Y-%m-%d");
 
-    formattedData = data.events.map(
+    formattedData = data.map(
         (event) => new Event(event.id, event.name, parseDate(event.date), event.description, event.category, event.iconUrl, event.pairEventId,
                              event.eventType, event.status, parseDate(event.estimatedCompleteDate))
     );
 
     let currentData = [];
     currentData = formattedData;
-
-    console.log("CurrentData", currentData);
 
     container = d3.create("div")
         .attr("class", "timeline-container")
@@ -505,7 +506,7 @@ function createTimeline(data) {
         console.log("filteredData", currentData);
         console.log("New defaultSelection", defaultSelection);
 
-        updateMainChart('.timeline-container',currentData);
+        updateMainChart('.timeline-container', currentData);
         updateNavChart(currentData);
         drawRectangles(currentData);
 
@@ -858,7 +859,7 @@ function createTimeline(data) {
 }
 
 
-export {createTimeline};
+export {createTimeline, SearchMenu, SelectionButton, Table, Event};
 
 
 
