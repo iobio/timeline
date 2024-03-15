@@ -1,21 +1,22 @@
 import * as d3 from 'd3';
-import {Table} from './Table.js';
 
 export function SearchMenu() {
-
-    const options = [
-        { text: 'None', value: '' },
-        { text: 'Application', value: 'Application' },
-        { text: 'Evaluation', value: 'Evaluation' },
-        { text: 'Diagnosis', value: 'Diagnosis' }
-    ];
-
     let selectedOption = '';
-
     let container;
     let select;
 
     function createSearchMenu(selector, onOptionSelected, data) {
+        // Extract unique categories from data
+        const uniqueCategories = Array.from(new Set(data.map(d => d.category)));
+
+        // Create options array including a default 'None' option
+        const defaultOption = { text: 'None', value: '' };
+        const categoryOptions = uniqueCategories.map(category => ({
+            text: category,
+            value: category
+        }));
+        const options = [defaultOption, ...categoryOptions];
+
         container = d3.select(selector)
             .append("div")
             .attr("class", "search-menu");
@@ -42,14 +43,10 @@ export function SearchMenu() {
 
         select.on('change', function() {
             selectedOption = d3.select(this).node().value; // Update the selectedOption with the current value
-            onOptionSelected(selectedOption);
-
             const filteredData = selectedOption ? 
             data.filter(d => d.category === selectedOption) : data;
-            
-            const d3Table = Table();
-            const tableContainer = document.querySelector('.timeline-container')
-            d3Table.updateTable(tableContainer, filteredData);
+
+            onOptionSelected(selectedOption, filteredData);
             
         });
     }

@@ -9,7 +9,7 @@ import {Table} from './Table.js';
 function createTimeline(data) {
     let x, x2, xTop, y, y2, mainChart, navChart, width, height, height2, xAxis, xAxisTop, xAxis2, yAxis_left, 
     yAxis_right, brush, container,svg, margin, margin2, defaultSelection, formattedData, minDate, maxDate, 
-    mainChartContent, navChartContent, brushHandle;
+    mainChartContent, navChartContent, brushHandle, colorScale;
 
 
     // Parse dates
@@ -43,10 +43,18 @@ function createTimeline(data) {
         .style("justify-content", "flex-end");
 
         const categories = Array.from(new Set(formattedData.map(d => d.category)));
+        // Define color scale for legend
         const colors = ["#699BF7", "#006400", "#FF0000"];
-        const colorScale = d3.scaleOrdinal()
-            .domain(categories)
-            .range(colors);
+                
+        if (categories.length > colors.length) {
+            colorScale = d3.scaleOrdinal()
+                .domain(categories)
+                .range(colors.concat(d3.schemeAccent));// Use the scheme Accent for additional colors
+        } else {
+            colorScale = d3.scaleOrdinal()
+                .domain(categories)
+                .range(colors);
+        }
         
         // Populate the legend with categories and colors
         categories.forEach(category => {
