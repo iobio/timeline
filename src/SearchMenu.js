@@ -19,12 +19,18 @@ export function SearchMenu() {
 
         container = d3.select(selector)
             .append("div")
-            .attr("class", "search-menu");
-
+            .attr("class", "search-menu")
+            .style("display", "flex")
+            .style("justify-content", "center")
+            .style("align-items", "center")
+            .style("height", "40px");
+          
         container.append("p")
             .attr("class", "title-text")
-            .text("Filter:");
-
+            .text("Filter:")
+            .style("padding", "10px")
+            .style("font-size", "13px");
+            
         select = container.append("select")
             .style("background-color", "#efefef");
 

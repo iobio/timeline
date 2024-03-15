@@ -13,19 +13,36 @@ export function Table() {
 
         container = d3.select(selector)
             .append("div")
-            .attr("class", "table-view-container hide")
+            .attr("class", "table-view-container")
+            .style("display", "none")
             .append("div")
-            .attr("class", "table-container");
+            .attr("class", "table-container")
+            .style("width", "900px")
+            .style("height", "450px")
+            .style("overflow-y", "auto")
+            .style("margin-left", "30px")
+            .style("margin-right", "30px")
+            .style("margin-top", "20px");
         
-        table = container.append('table');
+        table = container.append('table')
+            .attr('class', 'table')
+            .style('width', '100%')
+            .style('border-collapse', 'collapse')
+            .style('font-size', '13px');
 
-        thead = table.append('thead');
+        thead = table.append('thead')
+            .attr('class', 'thead-dark')
+            .style('background-color', '#f2f2f2');
+
         thead.append('tr')
                 .selectAll('th')
                 .data(['Event', 'Date', 'Category'])
                 .enter()
                 .append('th')
-                .text(d => d);
+                .text(d => d)
+                .style('padding', '8px')
+                .style('text-align', 'left')
+                .style('border', '1px solid #ddd')
     
         tbody = table.append('tbody');
     
@@ -38,7 +55,10 @@ export function Table() {
             .data(event => [event.name, event.date, event.category])
             .enter()
             .append('td')
-            .text(d => d);
+            .text(d => d)
+            .style('padding', '8px')
+            .style('text-align', 'left')
+            .style('border', '1px solid #ddd');
     }
 
     function updateTable(selector, filteredData) {
@@ -63,8 +83,11 @@ export function Table() {
         cells.exit().remove();
     
         cells.enter().append("td")
-             .merge(cells)
-             .text(function(d) { return d; });
+                    .merge(cells)
+                    .text(function(d) { return d; })
+                    .style("padding", "8px")
+                    .style("text-align", "left")
+                    .style("border", "1px solid #ddd");
     }
     
     

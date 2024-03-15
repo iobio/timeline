@@ -7,11 +7,17 @@ export function SelectionButton() {
     function createButton(selector) {
         container = d3.select(selector)
             .append("div")
-            .attr("class", "tabs-container");
+            .attr("class", "tabs-container")
+            .style("display", "flex")
+            .style("justify-content", "center")
+            .style("align-items", "center")
+            .style("height", "40px");
     
         container.append("p")
             .attr("class", "title-text")
-            .text("Switch View:");
+            .text("Switch View:")
+            .style("padding", "10px")
+            .style("font-size", "13px");
     
         const timelineButton = container.append("button")
             .attr("class", "button timeline-view-button")
@@ -25,7 +31,6 @@ export function SelectionButton() {
             .style("display", "inline-block")
             .style("text-align", "center")
             .style("vertical-align", "middle")
-            // .style("font-size", "13px")
             .style("line-height", "13px");
     
         container.append("button")
@@ -40,7 +45,6 @@ export function SelectionButton() {
             .style("display", "inline-block")
             .style("text-align", "center")
             .style("vertical-align", "middle")
-            // .style("font-size", "13px")
             .style("line-height", "13px");
 
         // Highlight the timeline button by default
@@ -49,8 +53,16 @@ export function SelectionButton() {
 
     function updateButtonHighlight(clickedButton) {
         const selector = ".tabs-container";
-        d3.selectAll(selector + " .button").classed("selected-button", false);
-        d3.select(clickedButton).classed("selected-button", true);
+        
+        d3.selectAll(selector + " .button")
+            .classed("selected-button", false)             
+            .style("background-color", null)
+            .style("color", null); 
+
+        d3.select(clickedButton)
+            .classed("selected-button", true)
+            .style("background-color", "#0f60c3")
+            .style("color", "#ffffff");        
     }
 
     function showView(viewType) {
