@@ -437,7 +437,8 @@ function createTimeline(data) {
             .attr("x", d => x(d.date))
             .attr("y", d => d.rowNumber * 40 + 30)
             // .attr("text-anchor", "middle") // Center the text around its x position
-            .style("font-size", textSizeScaleFactor + "px");
+            .style("font-size", textSizeScaleFactor + "px")
+            .style("display", textSizeScaleFactor <= 3 ? "none" : null);
         
         mainChart.selectAll(".tick line")
             .attr("class", "tick-line")
