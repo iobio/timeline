@@ -4,6 +4,8 @@ import {Modal} from './Modal.js';
 import {SelectionButton} from './SelectionButton.js';
 import {SearchMenu} from './SearchMenu.js';
 import {Table} from './Table.js';
+import '@mdi/font/css/materialdesignicons.min.css';
+
 
 
 function createTimeline(data) {
@@ -206,20 +208,36 @@ function createTimeline(data) {
 
     mainChartContent.selectAll(".dot")
         .data(formattedData)
-        .enter().append("image") 
+        .enter().append("foreignObject")
         .attr("class", "dot") // Assign a class for styling
-        .attr("href", function(d) { return d.iconUrl; })
         .attr("x", d => x(d.date)) // Use x for the center x position
         .attr("y", d => d.rowNumber * 40) // Use y for the center y position
         .attr("width", 20) 
         .attr("height", 20)
+        .append("xhtml:i")
+        .style("font-size", "20px")
+        .style("display", "flex")
+        .style("align-items", "center")
+        .style("justify-content", "center")
+        .style("height", "100%")
+        .style("color", function(d) { return colorScale(d.category); })
+        .attr("class", d => "mdi " + d.iconUrl)
+        .style("font-family", "Material Design Icons")
+        // .data(formattedData)
+        // .enter().append("image") 
+        // .attr("class", "dot") // Assign a class for styling
+        // .attr("href", function(d) { return d.iconUrl; })
+        // .attr("x", d => x(d.date)) // Use x for the center x position
+        // .attr("y", d => d.rowNumber * 40) // Use y for the center y position
+        // .attr("width", 20) 
+        // .attr("height", 20)
         // .enter().append("circle") // Use circle instead of image
         // .attr("class", "dot") 
         // .attr("cx", d => x(d.date)) // Use cx for the center x position
         // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
         // .attr("r", 8) 
         // .style("fill", function(d) { return colorScale(d.category); })
-        .style("stroke", "#fff")
+        // .style("stroke", "#fff")
         .on("mouseover", function(event, d) {
             const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>Status: Completed</span>" + "<br/>" +
             "Date: " + d3.timeFormat("%B %d, %Y")(d.date);
