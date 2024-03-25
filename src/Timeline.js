@@ -4,6 +4,7 @@ import {Modal} from './Modal.js';
 import {SelectionButton} from './SelectionButton.js';
 import {SearchMenu} from './SearchMenu.js';
 import {Table} from './Table.js';
+import { globalColorScale } from './colorScale.js';
 import '@mdi/font/css/materialdesignicons.min.css';
 
 
@@ -28,65 +29,140 @@ function createTimeline(data) {
     container = d3.create("div")
         .attr("class", "timeline-container")
         .style("position", "relative")
-        .style("height", "530px")
+        .style("height", "100%")
         .style("width", "960px")
         .style("background-color", "#ffffff")
         .style("border-width", "1px")
         .style("border-style", "ridge")
         .style("border-color", "rgba(0, 0, 0, 0.12)");
 
-    // Create the legend container
-    const legendContainer = container.append("div")
-        .attr("class", "legend-container")
-        .style("padding-top", "10px")
+    // Create the chips container
+    const chipsContainer = container.append("div")
+        .attr("class", "filter-chips-container")
+        .style("padding-top", "20px")
+        .style("padding-left", "30px")
         .style("padding-right", "30px")
+        .style("padding-bottom", "0px")
         .style("display", "flex")
         .style("flex-wrap", "wrap")
-        .style("justify-content", "flex-end");
+        .style("justify-content", "start")
+        .style("max-height", "55px")
+        .style("overflow-y", "auto");
 
-        const categories = Array.from(new Set(formattedData.map(d => d.category)));
-        // Define color scale for legend
-        const colors = ["#699BF7", "#006400", "#FF0000"];
-                
-        if (categories.length > colors.length) {
-            colorScale = d3.scaleOrdinal()
-                .domain(categories)
-                .range(colors.concat(d3.schemeAccent));// Use the scheme Accent for additional colors
-        } else {
-            colorScale = d3.scaleOrdinal()
-                .domain(categories)
-                .range(colors);
-        }
+        const categories = Array.from(new Set(data.map(d => d.category)));
+
+        // Define color scale for chips
+        colorScale = globalColorScale(categories);
+
+        // Create the "None" chip for showing all data
+        chipsContainer.append("div")
+        .style("background-color", "#CCCCCC")
+        .style("padding", "5px")
+        .style("margin-left", "0px")
+        .style("margin-right", "5px")
+        .style("margin-bottom", "3px")
+        .style("margin-top", "3px")
+        .style("border-radius", "10px")
+        .style("max-width", "110px")
+        .attr("class", "category-chip")
+        .text("All events")
+        .style("font-size", "10px")
+        .style("font-family", "sans-serif")
+        .style("color", "white")
+        .style("overflow", "hidden")
+        .style("white-space", "nowrap")
+        .style("text-overflow", "ellipsis")
+        .on("click", function() {
+            console.log("Clicked on: Show all data");
+            const category = null;
+            updateChart(category);
+            const d3Table = Table();
+            d3Table.updateTable('.timeline-container', data, category);
+        })
+        .on("mouseover", function() {
+            d3.select(this).style("box-shadow", "0 0 0px 2px #CCCCCC")
+                            .style("cursor", "pointer");
+        })
+        .on("mouseout", function() {
+            d3.select(this).style("box-shadow", "none")
+                            .style("cursor", "default");
+        });
+
         
-        // Populate the legend with categories and colors
+        // Populate the chips with categories and colors
         categories.forEach(category => {
-            const legendItem = legendContainer.append("div")
-                .style("display", "flex")
-                .style("align-items", "center")
-                .style("margin-left", "20px");
-        
-            legendItem.append("div")
-                .style("width", "12px")
-                .style("height", "12px")
-                .style("border-radius", "50%")
-                .style("background-color", colorScale(category))
-                .style("margin-right", "5px");
-        
-            legendItem.append("span")
+           
+            chipsContainer.append("div")
+                .style("background-color", d3.color(colorScale(category)))
+                .style("padding", "5px")
+                .style("margin-left", "0px")
+                .style("margin-right", "5px")
+                .style("margin-bottom", "3px")
+                .style("margin-top", "3px")
+                .style("border-radius", "10px")
+                .style("max-width", "110px")
+                .attr("class", "category-chip")
                 .text(category)
-                .style("font-size", "12px")
-                .style("font-family", "sans-serif");
+                .style("font-size", "10px")
+                .style("font-family", "sans-serif")
+                .style("color", "white")
+                .style("overflow", "hidden")
+                .style("white-space", "nowrap")
+                .style("text-overflow", "ellipsis")
+                .on("click", function() {
+                    console.log("Clicked on category:", category);
+                    updateChart(category);
+                    let filteredCategoryData;
+
+                    if (category) {
+                        filteredCategoryData = data.filter(d => d.category === category)
+                    }
+                    const d3Table = Table();
+                    d3Table.updateTable('.timeline-container', data, category);
+
+                })
+                .on("mouseover", function(event) {
+                    d3.select(this).style("box-shadow", `0 0 0px 2px ${d3.color(colorScale(category))}`)
+                                    .style("cursor", "pointer");
+
+                    // Check if the text is truncated
+                    const isTextTruncated = this.scrollWidth > this.clientWidth;
+
+                    if (isTextTruncated) {
+                        const tooltipText = category;
+                        // Update tooltip content and position only if text is truncated
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9)
+
+                        const chipHeight = this.getBoundingClientRect().height; 
+                        const spacing = 5;
+                        const tooltipTop = event.pageY - event.offsetY + chipHeight + spacing + "px";
+
+                        tooltip.html(tooltipText)
+                            .style("left", (event.pageX - event.offsetX) + "px")
+                            .style("top", tooltipTop);
+                    }
+                })
+                .on("mouseout", function() {
+                    d3.select(this).style("box-shadow", "none")
+                                    .style("cursor", "default");
+                    
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", 0);
+                })
         });
 
 
     width = 960;
-    height = 500;
+    height = 520;
     svg = container.append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("class", "timeline-svg");
 
-    margin = {top: 20, right: 30, bottom: 110, left: 30},
+    margin = {top: 20, right: 30, bottom: 130, left: 30},
     margin2 = {top: 420, right: 30, bottom: 30, left: 30},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
@@ -211,7 +287,7 @@ function createTimeline(data) {
         .enter().append("foreignObject")
         .attr("class", "dot") // Assign a class for styling
         .attr("x", d => x(d.date)) // Use x for the center x position
-        .attr("y", d => d.rowNumber * 40) // Use y for the center y position
+        .attr("y", d => d.rowNumber * 35) // Use y for the center y position
         .attr("width", 20) 
         .attr("height", 20)
         .append("xhtml:i")
@@ -228,17 +304,12 @@ function createTimeline(data) {
         // .attr("class", "dot") // Assign a class for styling
         // .attr("href", function(d) { return d.iconUrl; })
         // .attr("x", d => x(d.date)) // Use x for the center x position
-        // .attr("y", d => d.rowNumber * 40) // Use y for the center y position
+        // .attr("y", d => d.rowNumber * 35) // Use y for the center y position
         // .attr("width", 20) 
         // .attr("height", 20)
-        // .enter().append("circle") // Use circle instead of image
-        // .attr("class", "dot") 
-        // .attr("cx", d => x(d.date)) // Use cx for the center x position
-        // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
-        // .attr("r", 8) 
-        // .style("fill", function(d) { return colorScale(d.category); })
-        // .style("stroke", "#fff")
         .on("mouseover", function(event, d) {
+            d3.select(this).style("cursor", "pointer")
+
             const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>Status: Completed</span>" + "<br/>" +
             "Date: " + d3.timeFormat("%B %d, %Y")(d.date);
 
@@ -251,6 +322,7 @@ function createTimeline(data) {
                 .style("top", (event.pageY + 10) + "px");
         })
         .on("mouseout", function(d) {
+            d3.select(this).style("cursor", "default")
             
             tooltip.transition()
                 .duration(500)
@@ -263,7 +335,7 @@ function createTimeline(data) {
         .enter().append("text")
         .attr("class", "dotText")
         .attr("x", d => x(d.date))
-        .attr("y", d => d.rowNumber * 40 + 30) // Align the text vertically with the circle
+        .attr("y", d => d.rowNumber * 35 + 30) // Align the text vertically with the circle
         // .attr("text-anchor", "middle") // Center the text around its x position
         .text(function(d) { return d.name; })
         .on("click", function(event, d) {
@@ -272,11 +344,13 @@ function createTimeline(data) {
         })
         .on("mouseover", function(event, d) {
             d3.select(this)
-                .style("fill", function(d) { return colorScale(d.category); });
+                .style("fill", function(d) { return colorScale(d.category); })
+                .style("cursor", "pointer");
         })
         .on("mouseout", function(event, d) {
             d3.select(this)
-                .style("fill", "black"); // Revert to original color on mouseout
+                .style("fill", "black") // Revert to original color on mouseout
+                .style("cursor", "default");
         })
         .style("fill", "black")
         .style("font-size", "10px")
@@ -293,7 +367,7 @@ function createTimeline(data) {
         .attr("class", "dotContext") // Assign a class for styling
         .attr("cx", d => x2(d.date))
         .attr("cy", d => d.rowNumber * 7)
-        .attr("r", 3)
+        .attr("r", 2)
         .style("fill", function(d) { return colorScale(d.category); })
         .style("stroke", "#fff");
 
@@ -375,19 +449,28 @@ function createTimeline(data) {
 
     // Tooltip setup
     const tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0)
-    .style("position", "absolute")
-    .style("padding", "10px")
-    .style("background", "rgb(255,255,255)")
-    .style("border", "1px solid black")
-    .style("border-radius", "5px")
-    .style("pointer-events", "none") // Ensure the tooltip doesn't interfere with mouse events
-    .style("z-index", "10000")
-    .style("font-size", "10px");
+        .attr("class", "tooltip")
+        .style("opacity", 0)
+        .style("position", "absolute")
+        .style("padding", "10px")
+        .style("background", "rgb(255,255,255)")
+        .style("border", "1px solid black")
+        .style("border-radius", "5px")
+        .style("pointer-events", "none") // Ensure the tooltip doesn't interfere with mouse events
+        .style("z-index", "10000")
+        .style("font-size", "10px")
+        .style("height", "auto") 
+        .style("overflow", "hidden") 
+        .style("word-wrap", "break-word");
 
 
 
+    function getYearFraction(startDate, endDate) {
+        const oneYearInDays = 365.25; // Average considering leap years
+        const diffInDays = (endDate - startDate) / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+        const diffInYears = diffInDays / oneYearInDays;
+        return Math.round(diffInYears);
+    }
 
     function updateAxis(event) {
         let selection = event.selection || defaultSelection;
@@ -396,16 +479,16 @@ function createTimeline(data) {
         endDate = x2.invert(selection[1]);
 
         x.domain([startDate, endDate]); // Update x domain with new dates
-        let yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+        let yearsDiff = getYearFraction(startDate, endDate);
 
         // Dynamically adjust ticks based on date range
         if (yearsDiff <= 1) {
             xAxis.ticks(d3.timeMonth.every(1));
         } else if (yearsDiff <= 2) {
             xAxis.ticks(d3.timeMonth.every(2));
-        } else if (yearsDiff <= 5) {
+        } else if (yearsDiff <= 4) {
             xAxis.ticks(d3.timeMonth.every(3));
-        } else if (yearsDiff <= 10) {
+        } else if (yearsDiff <= 8) {
             xAxis.ticks(d3.timeMonth.every(6));
         } else {
             xAxis.ticks(d3.timeYear.every(1));
@@ -414,7 +497,7 @@ function createTimeline(data) {
         // Apply the updated xAxis with a transition
         mainChart.select(".axis--x")
           .transition()
-          .duration(750)
+          .duration(500)
           .call(xAxis);
 
       }
@@ -437,11 +520,8 @@ function createTimeline(data) {
         }
 
         mainChartContent.selectAll(".dot")
-            // .attr("cx", d => x(d.date)) // Use cx for the center x position
-            // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
-            // .attr("r", 8)
             .attr("x", d => x(d.date)) // Use cx for the center x position
-            .attr("y", d => d.rowNumber * 40) // Use cy for the center y position
+            .attr("y", d => d.rowNumber * 35) // Use cy for the center y position
             .attr("width", 20) 
             .attr("height", 20)
 
@@ -449,11 +529,11 @@ function createTimeline(data) {
         const currentDomain = x.domain();
         const totalDomain = x2.domain();
         const scaleFactor = (totalDomain[1] - totalDomain[0]) / (currentDomain[1] - currentDomain[0]);
-        const textSizeScaleFactor = Math.min(12, scaleFactor);
+        const textSizeScaleFactor = Math.min(10, scaleFactor);
 
         mainChartContent.selectAll(".dotText")
             .attr("x", d => x(d.date))
-            .attr("y", d => d.rowNumber * 40 + 30)
+            .attr("y", d => d.rowNumber * 35 + 30)
             // .attr("text-anchor", "middle") // Center the text around its x position
             .style("font-size", textSizeScaleFactor + "px")
             .style("display", textSizeScaleFactor <= 3 ? "none" : null);
@@ -550,21 +630,31 @@ function createTimeline(data) {
 
         mainChartContent.selectAll(".dot")
             .data(filteredData)
-            // .enter().append("circle") // Use circle instead of image
-            // .attr("class", "dot") 
-            // .attr("cx", d => x(d.date)) // Use cx for the center x position
-            // .attr("cy", d => d.rowNumber * 40) // Use cy for the center y position
-            // .attr("r", 8) 
-            // .style("fill", function(d) { return colorScale(d.category); })
-            // .style("stroke", "#fff")
-            .enter().append("image") 
+            .enter().append("foreignObject")
             .attr("class", "dot") // Assign a class for styling
-            .attr("href", function(d) { return d.iconUrl; })
             .attr("x", d => x(d.date)) // Use x for the center x position
-            .attr("y", d => d.rowNumber * 40) // Use y for the center y position
+            .attr("y", d => d.rowNumber * 35) // Use y for the center y position
             .attr("width", 20) 
             .attr("height", 20)
+            .append("xhtml:i")
+            .style("font-size", "20px")
+            .style("display", "flex")
+            .style("align-items", "center")
+            .style("justify-content", "center")
+            .style("height", "100%")
+            .style("color", function(d) { return colorScale(d.category); })
+            .attr("class", d => "mdi " + d.iconUrl)
+            .style("font-family", "Material Design Icons")
+            // .enter().append("image") 
+            // .attr("class", "dot") // Assign a class for styling
+            // .attr("href", function(d) { return d.iconUrl; })
+            // .attr("x", d => x(d.date)) // Use x for the center x position
+            // .attr("y", d => d.rowNumber * 35) // Use y for the center y position
+            // .attr("width", 20) 
+            // .attr("height", 20)
             .on("mouseover", function(event, d) {
+                d3.select(this).style("cursor", "pointer")
+
                 const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>Status: Completed</span>" + "<br/>" +
                 "Date: " + d3.timeFormat("%B %d, %Y")(d.date);
     
@@ -577,6 +667,7 @@ function createTimeline(data) {
                     .style("top", (event.pageY + 10) + "px");
             })
             .on("mouseout", function(d) {
+                d3.select(this).style("cursor", "default")
                 
                 tooltip.transition()
                     .duration(500)
@@ -589,7 +680,7 @@ function createTimeline(data) {
             .enter().append("text")
             .attr("class", "dotText")
             .attr("x", d => x(d.date))
-            .attr("y", d => d.rowNumber * 40 + 30)
+            .attr("y", d => d.rowNumber * 35 + 30)
             .text(function(d) { return d.name; })
             // .attr("text-anchor", "middle") // Center the text around its x position
             .style("fill", "black")
@@ -600,11 +691,13 @@ function createTimeline(data) {
             }.bind(this))
             .on("mouseover", function(event, d) {
                 d3.select(this)
-                    .style("fill", function(d) { return colorScale(d.category); });
+                    .style("fill", function(d) { return colorScale(d.category); })
+                    .style("cursor", "pointer");
             })
             .on("mouseout", function(event, d) {
                 d3.select(this)
-                    .style("fill", "black"); // Revert to original color on mouseout
+                    .style("fill", "black") // Revert to original color on mouseout
+                    .style("cursor", "default");
             });
 
     }
@@ -623,7 +716,7 @@ function createTimeline(data) {
             .attr("class", "dotContext")
             .attr("cx", d => x2(d.date))
             .attr("cy", d => d.rowNumber * 7)
-            .attr("r", 3)
+            .attr("r", 2)
             .style("fill", function(d) { return colorScale(d.category); });
     
     }
@@ -743,58 +836,59 @@ function createTimeline(data) {
         // Remove any existing rectangles
         mainChartContent.selectAll(".event-rect").remove();
     
-        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isEstimatedEndDate = false) => {
+        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isCurrentDate = false, addToolTip = true) => {
             // const startX = x(startDate) - 8; 
             const startX = x(startDate); 
             let endX;
-            if (isEstimatedEndDate) {
-                endX = x(new Date())
-            }  else {
+
+            if (isCurrentDate) {
+                const endDate = new Date();
+                endX = x(endDate) + 20;
+            } else {
                 endX = x(endDate) + (adjustEndX ? 20 : 0);
-                
             }
+            const opacity = 0.5;
 
-            // const opacity = isSingleEvent ? 0.5 : 0.3;
-            const opacity = 0.3;
+         
+            const rect = mainChartContent.append("rect")
+                    .attr("class", rectClass)
+                    .attr("x", startX)
+                    .attr("y", startY + 10)
+                    .attr("width", endX - startX)
+                    .attr("height", 20) 
+                    .attr("fill", fillColor)
+                    .attr("rx", 2)
+                    .attr("ry", 2)
+                    .style("opacity", opacity)
 
-            // let recHeight;
-            // if (endDate.getTime() === (new Date()).getTime()) {
-            //     recHeight = 20;
-            //     // startY = startY - 3;
-            // } else {
-            //     recHeight = 20;
-            // }
+            if (addToolTip) {
+                    rect.on("mouseover", function(event, d) {
+                        d3.select(this).style("cursor", "pointer");
 
-            mainChartContent.append("rect")
-                .attr("class", rectClass)
-                .attr("x", startX)
-                .attr("y", startY + 10)
-                .attr("width", endX - startX)
-                .attr("height", 20) 
-                .attr("fill", fillColor)
-                .attr("rx", 2)
-                .attr("ry", 2)
-                .style("opacity", opacity)
-                .on("mouseover", function(event, d) {
-                    const endDateText = isEstimatedEndDate ? "<span style='color: red;'>Estimated End:</span> "  : "End: ";
-                    const statusText = isEstimatedEndDate ? "Status: In Progress" : "Status: Completed";
-                    const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>" + statusText + "</span>" +
-                                        "<br/>" + "Start: " + d3.timeFormat("%B %d, %Y")(startDate) +
-                                        "<br/>" + endDateText + d3.timeFormat("%B %d, %Y")(endDate);
-                
-                    // Update tooltip content
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    tooltip.html(tooltipText)
-                        .style("left", (event.pageX) + "px")
-                        .style("top", (event.pageY + 10) + "px");
-                })
-                .on("mouseout", function(d) {
-                    tooltip.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                });
+                        const endDateText = isCurrentDate ? "<span style='color: red;'>Estimated End:</span> "  : "End: ";
+                        const statusText = isCurrentDate ? "Status: In Progress" : "Status: Completed";
+                        const tooltipText = "<span style='background-color: purple; color: white; border-radius: 4px; padding: 3px; display: inline-block;'>" + statusText + "</span>" +
+                                            "<br/>" + "Start: " + d3.timeFormat("%B %d, %Y")(startDate) +
+                                            "<br/>" + endDateText + d3.timeFormat("%B %d, %Y")(endDate);
+                    
+                        // Update tooltip content
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(tooltipText)
+                            .style("left", (event.pageX) + "px")
+                            .style("top", (event.pageY + 10) + "px");
+                    })
+                    .on("mouseout", function(d) {
+                        d3.select(this).style("cursor", "default");
+
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+            }
+            
+            
         };
     
         // Process events to find pairs and draw rectangles
@@ -810,7 +904,7 @@ function createTimeline(data) {
         });
     
         Object.values(eventPairs).forEach(pair => {
-            const startY = pair[0].rowNumber * 40 - 10;
+            const startY = pair[0].rowNumber * 35 - 10;
     
             if (pair.length === 2) {
                 drawRectangle(pair[0].date, pair[1].date, startY, "event-rect", colorScale(pair[0].category), true, false);
@@ -819,7 +913,10 @@ function createTimeline(data) {
                 // drawRectangle(pair[0].date, new Date(), startY, "event-rect", colorScale(pair[0].category), false, false);
                 // If there's an estimatedCompleteDate, draw a rectangle from the start date to the estimated date
                 if (pair[0].estimatedCompleteDate) {
-                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), true, true);
+                    // drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), true, true);
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", "#cccccc", true, false, false);
+                    // drawRectangle(currentDate, pair[0].estimatedCompleteDate, startY, "event-rect-estimated", "#cccccc", true, true);
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), false, true, true);
                 }
             }
         });

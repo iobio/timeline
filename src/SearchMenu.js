@@ -41,11 +41,11 @@ export function SearchMenu() {
             .attr('selected', true);
 
         select.selectAll('null')
-        .data(options) 
-        .enter() 
-        .append('option')
-        .text(d => d.text)
-        .attr('value', d => d.value);
+            .data(options) 
+            .enter() 
+            .append('option')
+            .text(d => d.text)
+            .attr('value', d => d.value);
 
         select.on('change', function() {
             selectedOption = d3.select(this).node().value; // Update the selectedOption with the current value
