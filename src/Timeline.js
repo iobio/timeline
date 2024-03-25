@@ -112,11 +112,7 @@ function createTimeline(data) {
                 .on("click", function() {
                     console.log("Clicked on category:", category);
                     updateChart(category);
-                    let filteredCategoryData;
-
-                    if (category) {
-                        filteredCategoryData = data.filter(d => d.category === category)
-                    }
+                   
                     const d3Table = Table();
                     d3Table.updateTable('.timeline-container', data, category);
 
@@ -357,7 +353,7 @@ function createTimeline(data) {
         .style("font-family", "sans-serif");
 
 
-    drawRectangles(currentData);
+    drawMainChartRectangles(currentData);
     drawCurrentDateMarker();
   
 
@@ -370,6 +366,8 @@ function createTimeline(data) {
         .attr("r", 2)
         .style("fill", function(d) { return colorScale(d.category); })
         .style("stroke", "#fff");
+
+    drawNavChartRectangles(currentData);
 
     navChart.append("g")
         .attr("class", "axis axis--x")
@@ -554,7 +552,7 @@ function createTimeline(data) {
         }
 
         updateCurrentDateMarker();
-        drawRectangles(currentData);
+        drawMainChartRectangles(currentData);
         updateAxis(event);
           
     }
@@ -615,7 +613,9 @@ function createTimeline(data) {
 
         updateMainChart('.timeline-container', currentData);
         updateNavChart(currentData);
-        drawRectangles(currentData);
+        drawMainChartRectangles(currentData);
+        drawNavChartRectangles(currentData);
+      
 
         // Update the brush to reflect the new defaultSelection
         navChart.select(".brush").call(brush.move, defaultSelection);
@@ -718,7 +718,7 @@ function createTimeline(data) {
             .attr("cy", d => d.rowNumber * 7)
             .attr("r", 2)
             .style("fill", function(d) { return colorScale(d.category); });
-    
+        
     }
 
 
@@ -832,7 +832,7 @@ function createTimeline(data) {
 
 
     
-    function drawRectangles(data) {
+    function drawMainChartRectangles(data) {
         // Remove any existing rectangles
         mainChartContent.selectAll(".event-rect").remove();
     
@@ -843,7 +843,7 @@ function createTimeline(data) {
 
             if (isCurrentDate) {
                 const endDate = new Date();
-                endX = x(endDate) + 20;
+                endX = x(endDate);
             } else {
                 endX = x(endDate) + (adjustEndX ? 20 : 0);
             }
@@ -911,12 +911,71 @@ function createTimeline(data) {
             } else if (pair.length === 1) {
                 // For a single event extending to the current date, adjustEndX is false, and check if it's estimated
                 // drawRectangle(pair[0].date, new Date(), startY, "event-rect", colorScale(pair[0].category), false, false);
+
                 // If there's an estimatedCompleteDate, draw a rectangle from the start date to the estimated date
                 if (pair[0].estimatedCompleteDate) {
                     // drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), true, true);
                     drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", "#cccccc", true, false, false);
                     // drawRectangle(currentDate, pair[0].estimatedCompleteDate, startY, "event-rect-estimated", "#cccccc", true, true);
                     drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), false, true, true);
+                }
+            }
+        });
+    }
+
+
+
+    function drawNavChartRectangles(data) {
+    
+        navChartContent.selectAll(".nav-event-rect").remove(); // Clear existing rectangles
+    
+        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isCurrentDate = false) => {
+            const startX = x2(startDate); 
+            let endX;
+
+            if (isCurrentDate) {
+                const endDate = new Date();
+                endX = x2(endDate);
+            } else {
+                // endX = x(endDate) + (adjustEndX ? 4 : 0);
+                endX = x2(endDate);
+            }
+
+            const opacity = 0.5;
+    
+            navChartContent.append("rect")
+                .attr("class", rectClass)
+                .attr("x", startX)
+                .attr("y", startY)
+                .attr("width", endX - startX)
+                .attr("height", 2)
+                .attr("fill", fillColor)
+                .style("opacity", opacity);
+        };
+
+        // Process events to find pairs and draw rectangles
+        const eventPairs = {};
+        data.forEach(event => {
+            if (event.eventType === "paired") {
+                if (!eventPairs[event.pairEventId]) {
+                    eventPairs[event.pairEventId] = [event];
+                } else {
+                    eventPairs[event.pairEventId].push(event);
+                }
+            }
+        });
+    
+        Object.values(eventPairs).forEach(pair => {
+            const startY = pair[0].rowNumber * 7 - 1;
+    
+            if (pair.length === 2) {
+                drawRectangle(pair[0].date, pair[1].date, startY, "nav-event-rect", colorScale(pair[0].category), true, false);
+            } else if (pair.length === 1) {
+
+                // If there's an estimatedCompleteDate, draw a rectangle from the start date to the estimated date
+                if (pair[0].estimatedCompleteDate) {
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "nav-event-rect", "#cccccc", true, false);
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "nav-event-rect", colorScale(pair[0].category), false, true);
                 }
             }
         });
