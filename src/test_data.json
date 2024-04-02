@@ -328,15 +328,16 @@
     },
     {
         "id": "27",
-        "name": "Results Received",
-        "date": "2024-02-20",
+        "name": "Follow Up",
+        "date": "2024-03-10",
         "description": "Samples to the timeline",
-        "category": "Follow Up",
-        "iconUrl": "mdi-email-arrow-left-outline",
+        "category": "Follow Up with Patient and Family",
+        "iconUrl": "mdi-phone-check",
         "pairEventId": "12",
         "eventType": "paired",
         "status": "started",
-        "estimatedCompleteDate": null
+        "estimatedCompleteDate": "2024-05-10"
+  
     },
     {   
         "id": "28",

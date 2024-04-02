@@ -2,7 +2,6 @@ import * as d3 from 'd3';
 import Event from './Event.js'; 
 import {Modal} from './Modal.js';
 import {SelectionButton} from './SelectionButton.js';
-import {SearchMenu} from './SearchMenu.js';
 import {Table} from './Table.js';
 import { globalColorScale } from './colorScale.js';
 import '@mdi/font/css/materialdesignicons.min.css';
@@ -836,18 +835,18 @@ function createTimeline(data) {
         // Remove any existing rectangles
         mainChartContent.selectAll(".event-rect").remove();
     
-        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isCurrentDate = false, addToolTip = true) => {
-            // const startX = x(startDate) - 8; 
+        const drawRectangle = (startDate, endDate, startY, rectClass, fillColor, adjustEndX = true, isCurrentDate = false, addToolTip = true) => { 
             const startX = x(startDate); 
             let endX;
 
             if (isCurrentDate) {
                 const endDate = new Date();
-                endX = x(endDate);
+                endX = x(endDate) + (adjustEndX ? 20 : 0);
             } else {
                 endX = x(endDate) + (adjustEndX ? 20 : 0);
             }
-            const opacity = 0.5;
+            const opacity = 0.3;
+            
 
          
             const rect = mainChartContent.append("rect")
@@ -907,16 +906,15 @@ function createTimeline(data) {
             const startY = pair[0].rowNumber * 35 - 10;
     
             if (pair.length === 2) {
-                drawRectangle(pair[0].date, pair[1].date, startY, "event-rect", colorScale(pair[0].category), true, false);
+                drawRectangle(pair[0].date, pair[1].date, startY, "event-rect", colorScale(pair[0].category), true, false, true);
             } else if (pair.length === 1) {
-                // For a single event extending to the current date, adjustEndX is false, and check if it's estimated
-                // drawRectangle(pair[0].date, new Date(), startY, "event-rect", colorScale(pair[0].category), false, false);
-
+            
                 // If there's an estimatedCompleteDate, draw a rectangle from the start date to the estimated date
-                if (pair[0].estimatedCompleteDate) {
-                    // drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), true, true);
-                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", "#cccccc", true, false, false);
-                    // drawRectangle(currentDate, pair[0].estimatedCompleteDate, startY, "event-rect-estimated", "#cccccc", true, true);
+                if (pair[0].estimatedCompleteDate && pair[0].estimatedCompleteDate > new Date()) {
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", "#cccccc", false, false, false);
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), false, true, true);
+                    
+                } else {
                     drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "event-rect", colorScale(pair[0].category), false, true, true);
                 }
             }
@@ -935,10 +933,9 @@ function createTimeline(data) {
 
             if (isCurrentDate) {
                 const endDate = new Date();
-                endX = x2(endDate);
+                endX = x2(endDate) + (adjustEndX ? 1 : 0);
             } else {
-                // endX = x(endDate) + (adjustEndX ? 4 : 0);
-                endX = x2(endDate);
+                endX = x2(endDate) + (adjustEndX ? 1 : 0); 
             }
 
             const opacity = 0.5;
@@ -973,8 +970,10 @@ function createTimeline(data) {
             } else if (pair.length === 1) {
 
                 // If there's an estimatedCompleteDate, draw a rectangle from the start date to the estimated date
-                if (pair[0].estimatedCompleteDate) {
-                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "nav-event-rect", "#cccccc", true, false);
+                if (pair[0].estimatedCompleteDate && pair[0].estimatedCompleteDate > new Date()) {
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "nav-event-rect", "#cccccc", false, false);
+                    drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "nav-event-rect", colorScale(pair[0].category), false, true);
+                } else {
                     drawRectangle(pair[0].date, pair[0].estimatedCompleteDate, startY, "nav-event-rect", colorScale(pair[0].category), false, true);
                 }
             }
@@ -1042,7 +1041,7 @@ function createTimeline(data) {
 }
 
 
-export {createTimeline, SearchMenu, SelectionButton, Table, Event};
+export {createTimeline, SelectionButton, Table, Event};
 
 
 
