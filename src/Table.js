@@ -71,7 +71,7 @@ export function Table() {
             .style('padding', '8px')
             .style('text-align', 'left')
             .style('border', '1px solid #ddd')
-            .style('max-width', '200px')
+            .style('max-width', '250px')
             .style('white-space', 'normal')
             .style('word-wrap', 'break-word');
     }

@@ -32,7 +32,7 @@
         "iconUrl": "mdi-database-plus-outline",
         "pairEventId": null,
         "eventType": "single",
-        "status": null,
+        "status": "completed",
         "estimatedCompleteDate": null
     },
     {
@@ -44,7 +44,7 @@
         "iconUrl": "mdi-arrow-decision",
         "pairEventId": null,
         "eventType": "single",
-        "status": null,
+        "status": "completed",
         "estimatedCompleteDate": null
   
     },
@@ -79,25 +79,12 @@
         "name": "Wrap Up Documents",
         "date": "2021-09-15",
         "description": "Wrap up docs to the timeline",
-        "category": "Evaluation",
+        "category": "Post Wrap Up",
         "iconUrl": "mdi-download-box-outline",
         "pairEventId": null,
         "eventType": "single",
-        "status": null,
+        "status": "completed",
         "estimatedCompleteDate": null
-  
-    },
-    {
-        "id": "8",
-        "name": "Samples sent to MOSC",
-        "date": "2024-01-10",
-        "description": "Samples to the timeline",
-        "category": "Diagnosis",
-        "iconUrl": "mdi-truck-delivery-outline",
-        "pairEventId": "3",
-        "eventType": "paired",
-        "status": "started",
-        "estimatedCompleteDate": "2024-03-10"
   
     }
 
