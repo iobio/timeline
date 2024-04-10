@@ -179,6 +179,7 @@ function createTimeline(data) {
                 .tickFormat("");
 
     xAxis2 = d3.axisBottom(x2)
+                .ticks(d3.timeYear.every(1))
                 .tickFormat(d3.timeFormat("%Y"));
 
     yAxis_left = d3.axisLeft(y)
@@ -219,7 +220,8 @@ function createTimeline(data) {
     maxDate = d3.max(formattedData, function(d) { return d.date; });
 
     // Adjust to start at the beginning of the minDate year and end at the end of current year
-    x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
+    // x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
+    x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(new Date())]);
     x2.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(new Date())]);
 
     xTop.domain(x.domain());
