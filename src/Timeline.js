@@ -150,18 +150,35 @@ function createTimeline(data) {
         });
 
 
-    width = 960;
-    height = 520;
+    // Define the size of the viewbox
+    const viewWidth = 960;
+    const viewHeight = 520;
+
     svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", `0 0 ${viewWidth} ${viewHeight}`)
+        .classed("svg-content-responsive", true)  // Add responsive class for additional CSS styling
         .attr("class", "timeline-svg");
 
     margin = {top: 20, right: 30, bottom: 130, left: 30},
     margin2 = {top: 420, right: 30, bottom: 30, left: 30},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    height2 = +svg.attr("height") - margin2.top - margin2.bottom,
+    width = viewWidth - margin.left - margin.right,
+    height = viewHeight - margin.top - margin.bottom,
+    height2 = viewHeight - margin2.top - margin2.bottom;
+
+
+    // width = 960;
+    // height = 520;
+    // svg = container.append("svg")
+    //     .attr("width", width)
+    //     .attr("height", height)
+    //     .attr("class", "timeline-svg");
+
+    // margin = {top: 20, right: 30, bottom: 130, left: 30},
+    // margin2 = {top: 420, right: 30, bottom: 30, left: 30},
+    // width = +svg.attr("width") - margin.left - margin.right,
+    // height = +svg.attr("height") - margin.top - margin.bottom,
+    // height2 = +svg.attr("height") - margin2.top - margin2.bottom,
 
     x = d3.scaleTime().range([0, width]),
     x2 = d3.scaleTime().range([0, width]),

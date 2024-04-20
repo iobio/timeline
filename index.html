@@ -8,21 +8,87 @@
             padding: 20px;
         }
 
-        body {
+        .container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: fit-content;
-            
+            width: 100%;
+            margin: 20px;
         }
+
+        .parent-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: fit-content;
+            width: 100%; 
+        }
+
+        .banner-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 960px;
+        }
+
+        .banner-container > * {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-container {
+            margin-left: 30px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-right: 30px;
+        }
+
+        .svg-content-responsive {
+            display: block;
+            width: 100%;  
+            height: auto;
+            overflow: visible;
+        }
+
+        .timeline-container {
+            width: 100%;
+            max-width: 960px;  
+            margin: auto;
+        } 
+  
     </style>
   </head>
   <body>
 
+    <div class="container">
+        <div class="banner-container">
+            <div class="icon-container">
+                <i class="mdi mdi-chart-timeline" style="color: #0f60c3; font-size: 30px;"></i>
+                <span style="font-size: 16px; margin-left: 10px; font-weight: 600">Case Timeline</span>
+      
+            </div>
+             
+            <div class="button-container"></div>
+        </div>
+    
+        <div class="parent-container">
+        </div>
+    
+    </div>
+
     <!-- <script src="https://cdn.jsdelivr.net/gh/iobio/timeline/dist/timeline.min.js"></script> -->
 
     <script type="module">
-        import {createTimeline, Event} from './src/Timeline.js';
+        import {createTimeline, SelectionButton, Table, Event} from './src/Timeline.js';
 
         async function fetchData() {
             try {
@@ -42,8 +108,16 @@
         async function init() {
             const events = await fetchData();
             if(events) {
-                const tl = createTimeline(events);
-                document.body.appendChild(tl.dom);
+                const d3Timeline = createTimeline(events);
+                document.querySelector('.parent-container').appendChild(d3Timeline.dom);
+
+                const d3SelectionButton = SelectionButton(); 
+                d3SelectionButton.createButton(document.querySelector('.button-container'));
+
+                const d3Table = Table();
+                const tableContainer = document.querySelector('.timeline-container')
+                d3Table.createTable(tableContainer, events);
+
             } else {
                 console.error('Failed to fetch events.');
             }
