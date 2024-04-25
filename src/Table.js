@@ -24,16 +24,16 @@ export function Table() {
             .style("max-height", "470px")
             .style("max-width", "900px")
             .style("overflow-y", "auto")
-            .style("margin-left", "30px")
-            .style("margin-right", "30px")
-            .style("margin-top", "20px")
-            .style("margin-bottom", "20px");
+            // .style("margin-left", "30px")
+            // .style("margin-right", "30px")
+            // .style("margin-top", "20px")
+            // .style("margin-bottom", "20px");
         
         table = container.append('table')
             .attr('class', 'table')
             .style('width', '100%')
             .style('border-collapse', 'collapse')
-            .style('font-size', '13px');
+            // .style('font-size', '13px');
 
         thead = table.append('thead')
             .attr('class', 'thead-dark')
@@ -45,7 +45,7 @@ export function Table() {
                 .enter()
                 .append('th')
                 .text(d => d)
-                .style('padding', '8px')
+                // .style('padding', '8px')
                 .style('text-align', 'left')
                 .style('border', '1px solid #ddd')
     
@@ -64,15 +64,15 @@ export function Table() {
             .html(function(d, i) {
                 // Check if this is the category cell
                 if (i === 2) {
-                    return `<span class="dot" style="height: 10px; width: 10px; background-color: ${colorScale(d)}; border-radius: 50%; display: inline-block; margin-right: 5px;"></span>${d}`;
+                    return `<span class="category-dot" style="background-color: ${colorScale(d)};"></span>${d}`;
                 } else {
                     return d;
                 }
             })
-            .style('padding', '8px')
+            // .style('padding', '8px')
             .style('text-align', 'left')
             .style('border', '1px solid #ddd')
-            .style('max-width', '250px')
+            // .style('max-width', '250px')
             .style('white-space', 'normal')
             .style('word-wrap', 'break-word');
     }
@@ -117,15 +117,15 @@ export function Table() {
                     // .text(function(d) { return d; })
                     .html(function(d, i) {
                         if (i === 2) { // Category column
-                            return `<span class="dot" style="height: 10px; width: 10px; background-color: ${colorScale(d)}; border-radius: 50%; display: inline-block; margin-right: 5px;"></span>${d}`;
+                            return `<span class="category-dot" style="background-color: ${colorScale(d)};"></span>${d}`;
                         } else {
                             return d;
                         }
                     })
-                    .style("padding", "8px")
+                    // .style("padding", "8px")
                     .style("text-align", "left")
                     .style("border", "1px solid #ddd")
-                    .style('max-width', '200px')
+                    // .style('max-width', '200px')
                     .style('white-space', 'normal')
                     .style('word-wrap', 'break-word');
     }

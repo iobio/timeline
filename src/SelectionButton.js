@@ -17,7 +17,7 @@ export function SelectionButton() {
             .attr("class", "title-text")
             .text("Switch View:")
             .style("padding", "10px")
-            .style("font-size", "13px");
+            // .style("font-size", "13px");
     
         const timelineButton = container.append("button")
             .attr("class", "button timeline-view-button")
@@ -26,12 +26,12 @@ export function SelectionButton() {
                 updateButtonHighlight(this);
                 showView('timeline');
             })
-            .style("width", "70px")
-            .style("height", "20px")
-            .style("display", "inline-block")
-            .style("text-align", "center")
-            .style("vertical-align", "middle")
-            .style("line-height", "13px");
+            // .style("width", "70px")
+            // .style("height", "20px")
+            // .style("display", "inline-block")
+            // .style("text-align", "center")
+            // .style("vertical-align", "middle")
+            // .style("line-height", "13px");
     
         container.append("button")
             .attr("class", "button table-view-button")
@@ -40,12 +40,12 @@ export function SelectionButton() {
                 updateButtonHighlight(this);
                 showView('table');  
             })
-            .style("width", "70px")
-            .style("height", "20px")
-            .style("display", "inline-block")
-            .style("text-align", "center")
-            .style("vertical-align", "middle")
-            .style("line-height", "13px");
+            // .style("width", "70px")
+            // .style("height", "20px")
+            // .style("display", "inline-block")
+            // .style("text-align", "center")
+            // .style("vertical-align", "middle")
+            // .style("line-height", "13px");
 
         // Highlight the timeline button by default
         updateButtonHighlight(timelineButton.node());

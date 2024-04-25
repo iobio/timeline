@@ -1,5 +1,5 @@
 class Event {
-    constructor(id, name, date, description, category, iconUrl, pairEventId, eventType, status, estimatedCompleteDate ) {
+    constructor(id, name, date, description, category, iconUrl, pairEventId, eventType, status, estimatedCompleteDate, modal ) {
       this.id = id
       this.name = name;
       this.date = date;
@@ -10,6 +10,7 @@ class Event {
       this.eventType = eventType;
       this.status = status;
       this.estimatedCompleteDate = estimatedCompleteDate;
+      this.modal = modal;
       this.formattedDate = this.formatDate();
     }
 

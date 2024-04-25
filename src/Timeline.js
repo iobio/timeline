@@ -19,7 +19,7 @@ function createTimeline(data) {
 
     formattedData = data.map(
         (event) => new Event(event.id, event.name, parseDate(event.date), event.description, event.category, event.iconUrl, event.pairEventId,
-                             event.eventType, event.status, parseDate(event.estimatedCompleteDate))
+                             event.eventType, event.status, parseDate(event.estimatedCompleteDate), event.modal)
     );
 
     let currentData = [];
@@ -38,15 +38,12 @@ function createTimeline(data) {
     // Create the chips container
     const chipsContainer = container.append("div")
         .attr("class", "filter-chips-container")
-        .style("padding-top", "20px")
-        .style("padding-left", "30px")
-        .style("padding-right", "30px")
-        .style("padding-bottom", "0px")
-        .style("display", "flex")
-        .style("flex-wrap", "wrap")
-        .style("justify-content", "start")
-        .style("max-height", "55px")
-        .style("overflow-y", "auto");
+        // .style("padding", "20px 30px 0px 30px")
+        // .style("display", "flex")
+        // .style("flex-wrap", "wrap")
+        // .style("justify-content", "start")
+        // .style("max-height", "55px")
+        // .style("overflow-y", "auto");
 
         const categories = Array.from(new Set(data.map(d => d.category)));
 
@@ -56,16 +53,13 @@ function createTimeline(data) {
         // Create the "None" chip for showing all data
         chipsContainer.append("div")
         .style("background-color", "#CCCCCC")
-        .style("padding", "5px")
-        .style("margin-left", "0px")
-        .style("margin-right", "5px")
-        .style("margin-bottom", "3px")
-        .style("margin-top", "3px")
-        .style("border-radius", "10px")
+        // .style("padding", "5px")
+        // .style("margin", "3px 0px 3px 5px")
+        // .style("border-radius", "10px")
         .style("max-width", "110px")
         .attr("class", "category-chip")
         .text("All events")
-        .style("font-size", "10px")
+        // .style("font-size", "10px")
         .style("font-family", "sans-serif")
         .style("color", "white")
         .style("overflow", "hidden")
@@ -93,16 +87,13 @@ function createTimeline(data) {
            
             chipsContainer.append("div")
                 .style("background-color", d3.color(colorScale(category)))
-                .style("padding", "5px")
-                .style("margin-left", "0px")
-                .style("margin-right", "5px")
-                .style("margin-bottom", "3px")
-                .style("margin-top", "3px")
-                .style("border-radius", "10px")
+                // .style("padding", "5px")
+                // .style("margin", "3px 0px 3px 5px")
+                // .style("border-radius", "10px")
                 .style("max-width", "110px")
                 .attr("class", "category-chip")
                 .text(category)
-                .style("font-size", "10px")
+                // .style("font-size", "10px")
                 .style("font-family", "sans-serif")
                 .style("color", "white")
                 .style("overflow", "hidden")
@@ -210,6 +201,7 @@ function createTimeline(data) {
     brush = d3.brushX()
         .extent([[0, 0], [width, height2]])
         .on("brush end", brushed); 
+        // .on("brush", brushed); 
 
     svg.append("defs").append("clipPath")
         .attr("id", "clip")
@@ -354,7 +346,7 @@ function createTimeline(data) {
         .text(function(d) { return d.name; })
         .on("click", function(event, d) {
             console.log('dotText clicked', d);
-            openModal('.timeline-container', d.name, d.description);
+            openModal('.timeline-container', d);
         })
         .on("mouseover", function(event, d) {
             d3.select(this)
@@ -705,7 +697,7 @@ function createTimeline(data) {
             .style("font-size", "10px")
             .style("font-family", "sans-serif")
             .on("click", function(event, d) {
-                openModal(selector, d.name, d.description);
+                openModal(selector, d);
             }.bind(this))
             .on("mouseover", function(event, d) {
                 d3.select(this)
@@ -741,12 +733,11 @@ function createTimeline(data) {
 
 
 
-    function openModal(selector, name, description) {
+    function openModal(selector, event) {
         const modal = Modal();
         modal.createModal(selector, {
-            show: true,
-            name: name,
-            description: description,
+            title: event.modal.title,
+            fields: event.modal.fields,
         });
     }
 

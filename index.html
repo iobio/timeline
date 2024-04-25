@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         #root {
             border: 1px solid black;
@@ -15,7 +16,8 @@
             justify-content: center;
             height: fit-content;
             width: 100%;
-            margin: 20px;
+            margin-top: 20px;
+            
         }
 
         .parent-container {
@@ -33,6 +35,7 @@
             justify-content: space-between;
             width: 100%;
             max-width: 960px;
+            padding: 10px;
         }
 
         .banner-container > * {
@@ -43,6 +46,17 @@
 
         .icon-container {
             margin-left: 30px;
+        }
+
+        .icon-container i {
+            font-size: 30px;
+            color: #0f60c3;
+        }
+
+        .icon-container span {
+            font-size: 15px;
+            margin-left: 10px;
+            font-weight: 600;
         }
 
         .button-container {
@@ -63,7 +77,155 @@
             width: 100%;
             max-width: 960px;  
             margin: auto;
-        } 
+        }
+
+        .title-text {
+            font-size: 13px;
+            
+        }
+
+        .button {
+            width: 70px;
+            height: 20px;
+            font-size: 13px;
+    
+        }
+
+        .table-view-container {
+            margin: 20px 30px;
+        }
+
+        .table {
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 8px;
+            max-width: 250px;
+            
+        }
+
+        .category-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .modal-content {
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal h3, .modal p {
+            margin: 10px 0;
+        }
+
+        .filter-chips-container {
+            padding: 20px 30px 0 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: start;
+            max-height: 55px;
+            overflow-y: auto;
+        }
+
+        .category-chip {
+            padding: 5px;
+            margin: 3px 0px 3px 5px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-family: sans-serif;
+            color: white;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            box-shadow: none; /* Initial state */
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .category-chip:hover, .category-chip:focus {
+            box-shadow: 0 0 5px 2px #CCCCCC;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .banner-container {
+                padding: 5px;
+            }
+
+            .icon-container {
+                margin-left: 0;
+                margin-bottom: 5px;
+            }
+
+            .icon-container i {
+                font-size: 20px;
+            }
+
+            .icon-container span {
+                font-size: 10px; 
+            }
+
+            .button-container {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .title-text {
+                font-size: 10px;
+            }
+
+            .button {
+                width: 50px;
+                height: 15px;
+                font-size: 10px;
+            }
+
+            .table-view-container {
+                margin: 10px;
+            }
+            .table {
+                font-size: 5px;
+            }
+            th, td {
+                padding: 4px;
+                max-width: 150px;
+            }
+
+            .category-dot {
+                height: 6px;
+                width: 6px;
+            }
+
+            .modal-content {
+                padding: 10px;
+                max-width: 200px;
+            }
+
+            .modal h3 {
+                font-size: 10px;
+            }
+
+            .modal p {
+                font-size: 5px;
+            }
+
+            .filter-chips-container {
+                padding: 10px, 10px, 0, 10px;
+                max-height: 20px;
+            }
+
+            .category-chip {
+                font-size: 5px;
+                padding: 3px;
+                margin: 1px 3px;
+            }
+        }
   
     </style>
   </head>
@@ -72,8 +234,8 @@
     <div class="container">
         <div class="banner-container">
             <div class="icon-container">
-                <i class="mdi mdi-chart-timeline" style="color: #0f60c3; font-size: 30px;"></i>
-                <span style="font-size: 16px; margin-left: 10px; font-weight: 600">Case Timeline</span>
+                <i class="mdi mdi-chart-timeline"></i>
+                <span>Case Timeline</span>
       
             </div>
              
@@ -97,7 +259,7 @@
 
                 const events = jsonData.events.map(
                   (event) => new Event(event.id, event.name, event.date, event.description, event.category, event.iconUrl, event.pairEventId,
-                                 event.eventType, event.status, event.estimatedCompleteDate)
+                                 event.eventType, event.status, event.estimatedCompleteDate, event.modal)
                 );
                 return events;
             } catch (error) {

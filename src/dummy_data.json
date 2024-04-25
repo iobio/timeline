@@ -1,93 +1,162 @@
-{ "events":[
-    {
-        "id": "1",
-        "name": "Application Submitted",
-        "date": "2020-04-01",
-        "description": "Application submitted to the timeline",
-        "category": "Application",
-        "iconUrl": "mdi-account-file-text",
-        "pairEventId": "1",
-        "eventType": "paired",
-        "status": "started",
-        "estimatedCompleteDate": "2020-05-01"
-    },    
-    {
-        "id": "2",
-        "name": "Medical Records Requested",
-        "date": "2020-05-01",
-        "description": "Medical records submitted to the timeline",
-        "category": "Application",
-        "iconUrl": "mdi-application-import",
-        "pairEventId": "1",
-        "eventType": "paired",
-        "status": "completed",
-        "estimatedCompleteDate": null
-    },
-    {   
-        "id": "3",
-        "name": "Medical Records Received",
-        "date": "2020-08-02",
-        "description": "Medical records received to the timeline",
-        "category": "Application",
-        "iconUrl": "mdi-database-plus-outline",
-        "pairEventId": null,
-        "eventType": "single",
-        "status": "completed",
-        "estimatedCompleteDate": null
-    },
-    {
-        "id": "4",
-        "name": "Decision Date",
-        "date": "2020-10-02",
-        "description": "Decision date to the timeline",
-        "category": "Application",
-        "iconUrl": "mdi-arrow-decision",
-        "pairEventId": null,
-        "eventType": "single",
-        "status": "completed",
-        "estimatedCompleteDate": null
-  
-    },
-    {
-        "id": "5",
-        "name": "Evaluation Started",
-        "date": "2021-04-02",
-        "description": "Evaluation started to the timeline",
-        "category": "Evaluation",
-        "iconUrl": "mdi-clock-start",
-        "pairEventId": "2",
-        "eventType": "paired",
-        "status": "started",
-        "estimatedCompleteDate": "2021-07-15"
-  
-    },
-    {
-        "id": "6",
-        "name": "Evaluation Completed",
-        "date": "2021-07-15",
-        "description": "Evaluation completed to the timeline",
-        "category": "Evaluation",
-        "iconUrl": "mdi-file-chart-check-outline",
-        "pairEventId": "2",
-        "eventType": "paired",
-        "status": "completed",
-        "estimatedCompleteDate": null
-  
-    },
-    {   
-        "id": "7",
-        "name": "Wrap Up Documents",
-        "date": "2021-09-15",
-        "description": "Wrap up docs to the timeline",
-        "category": "Post Wrap Up",
-        "iconUrl": "mdi-download-box-outline",
-        "pairEventId": null,
-        "eventType": "single",
-        "status": "completed",
-        "estimatedCompleteDate": null
-  
-    }
-
-   
-     
-]}
+{
+    "events": [
+        {
+            "id": "1",
+            "name": "Application Submitted",
+            "date": "2020-04-01",
+            "description": "Application submitted to the timeline",
+            "category": "Application",
+            "iconUrl": "mdi-account-file-text",
+            "pairEventId": "1",
+            "eventType": "paired",
+            "status": "started",
+            "estimatedCompleteDate": "2020-05-01",
+            "modal": {
+                "title": "Application Submitted Details",
+                "fields": [
+                    {"label": "Application Type", "value": "Initial"},
+                    {"label": "Application Date", "value": "2020-04-01"},
+                    {"label": "Application Status", "value": "Started"},
+                    {"label": "Estimated Complete Date", "value": "2020-05-01"}
+                ]
+            }
+        },
+        {
+            "id": "2",
+            "name": "Medical Records Requested",
+            "date": "2020-05-01",
+            "description": "Medical records submitted to the timeline",
+            "category": "Application",
+            "iconUrl": "mdi-application-import",
+            "pairEventId": "1",
+            "eventType": "paired",
+            "status": "completed",
+            "estimatedCompleteDate": null,
+            "modal": {
+                "title": "Medical Records Request Details",
+                "fields": [
+                    {"label": "Request Date", "value": "2020-05-01"},
+                    {"label": "Status", "value": "Completed"}
+                ]
+            }
+        },
+        {
+            "id": "3",
+            "name": "Medical Records Received",
+            "date": "2020-08-02",
+            "description": "Medical records received to the timeline",
+            "category": "Application",
+            "iconUrl": "mdi-database-plus-outline",
+            "pairEventId": null,
+            "eventType": "single",
+            "status": "completed",
+            "estimatedCompleteDate": null,
+            "modal": {
+                "title": "Medical Records Received Details",
+                "fields": [
+                    {"label": "Received Date", "value": "2020-08-02"},
+                    {"label": "Status", "value": "Completed"}
+                ]
+            }
+        },
+        {
+            "id": "4",
+            "name": "Decision Date",
+            "date": "2020-10-02",
+            "description": "Decision date to the timeline",
+            "category": "Application",
+            "iconUrl": "mdi-arrow-decision",
+            "pairEventId": null,
+            "eventType": "single",
+            "status": "completed",
+            "estimatedCompleteDate": null,
+            "modal": {
+                "title": "Decision Details",
+                "fields": [
+                    {"label": "Decision Date", "value": "2020-10-02"},
+                    {"label": "Status", "value": "Completed"}
+                ]
+            }
+        },
+        {
+            "id": "5",
+            "name": "Evaluation Started",
+            "date": "2021-04-02",
+            "description": "Evaluation started to the timeline",
+            "category": "Evaluation",
+            "iconUrl": "mdi-clock-start",
+            "pairEventId": "2",
+            "eventType": "single",
+            "status": "started",
+            "estimatedCompleteDate": "2021-07-15",
+            "modal": {
+                "title": "Evaluation Start Details",
+                "fields": [
+                    {"label": "Start Date", "value": "2021-04-02"},
+                    {"label": "Estimated Completion", "value": "2021-07-15"},
+                    {"label": "Status", "value": "Started"}
+                ]
+            }
+        },
+        {
+            "id": "6",
+            "name": "Evaluation Completed",
+            "date": "2021-07-15",
+            "description": "Evaluation completed to the timeline",
+            "category": "Evaluation",
+            "iconUrl": "mdi-file-chart-check-outline",
+            "pairEventId": "2",
+            "eventType": "single",
+            "status": "completed",
+            "estimatedCompleteDate": null,
+            "modal": {
+                "title": "Evaluation Completion Details",
+                "fields": [
+                    {"label": "Completion Date", "value": "2021-07-15"},
+                    {"label": "Status", "value": "Completed"}
+                ]
+            }
+        },
+        {
+            "id": "7",
+            "name": "Wrap Up Documents",
+            "date": "2021-09-15",
+            "description": "Wrap up documents submitted to the timeline",
+            "category": "Post Wrap Up",
+            "iconUrl": "mdi-download-box-outline",
+            "pairEventId": null,
+            "eventType": "single",
+            "status": "completed",
+            "estimatedCompleteDate": null,
+            "modal": {
+                "title": "Wrap Up Document Details",
+                "fields": [
+                    {"label": "Submission Date", "value": "2021-09-15"},
+                    {"label": "Document Type", "value": "Final Submission"},
+                    {"label": "Status", "value": "Completed"}
+                ]
+            }
+        },
+        {
+            "id": "8",
+            "name": "Final Approval",
+            "date": "2021-10-10",
+            "description": "Final approval received",
+            "category": "Completion",
+            "iconUrl": "mdi-check-all",
+            "pairEventId": null,
+            "eventType": "single",
+            "status": "completed",
+            "estimatedCompleteDate": null,
+            "modal": {
+                "title": "Final Approval Details",
+                "fields": [
+                    {"label": "Approval Date", "value": "2021-10-10"},
+                    {"label": "Approved By", "value": "Board of Directors"},
+                    {"label": "Status", "value": "Approved"}
+                ]
+            }
+        }
+        ]
+}        
+        
